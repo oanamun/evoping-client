@@ -3,10 +3,6 @@ import { Match, Link, Redirect, Miss } from 'react-router';
 import { UsersContainer } from 'modules/users';
 
 const propTypes = {
-  children: PropTypes.oneOfType([
-    PropTypes.arrayOf(PropTypes.node),
-    PropTypes.node,
-  ]),
   pathname: PropTypes.string,
 };
 
