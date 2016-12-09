@@ -1,0 +1,74 @@
+{
+  "name": "EvoPing",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/evozonjs/evoping-client"
+  },
+  "dependencies": {
+    "react": "^15.3.2",
+    "react-dom": "^15.3.2",
+    "react-intl": "^2.1.5",
+    "react-redux": "^4.4.5",
+    "react-router": "^4.0.0-alpha.4",
+    "redux": "^3.6.0",
+    "redux-logger": "^2.6.1",
+    "redux-thunk": "^2.1.0",
+    "reselect": "^2.5.1",
+    "whatwg-fetch": "^1.0.0"
+  },
+  "devDependencies": {
+    "babel-plugin-resolver": "^1.1.0",
+    "babel-plugin-transform-runtime": "^6.15.0",
+    "babel-preset-es2015": "^6.14.0",
+    "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-2": "^6.13.0",
+    "babel-resolver": "^1.1.0",
+    "babel-runtime": "^6.11.6",
+    "enzyme": "^2.4.1",
+    "eslint": "^3.6.1",
+    "eslint-config-airbnb": "^12.0.0",
+    "eslint-plugin-babel": "^3.3.0",
+    "eslint-plugin-import": "^1.16.0",
+    "eslint-plugin-jsx-a11y": "^2.2.2",
+    "eslint-plugin-react": "^6.3.0",
+    "fs": "^0.0.1-security",
+    "glob": "^7.0.6",
+    "grommet-toolbox": "^0.4.4",
+    "gulp": "^3.9.1",
+    "gulp-babel": "^6.1.2",
+    "gulp-eslint": "^3.0.1",
+    "gulp-filter": "^4.0.0",
+    "gulp-nodemon": "^2.1.0",
+    "jest": "^15.1.1",
+    "lodash": "^4.15.0",
+    "mkdirp": "^0.5.1",
+    "node-sass": "^3.8.0",
+    "pre-commit": "^1.1.3",
+    "react-addons-test-utils": "^15.3.2",
+    "redux-devtools": "^3.3.1",
+    "redux-devtools-dock-monitor": "^1.1.1",
+    "redux-devtools-log-monitor": "^1.0.11",
+    "redux-logger": "^2.6.1",
+    "redux-promise-middleware": "^4.0.0",
+    "webpack": "^1.13.2",
+    "yargs": "^5.0.0"
+  },
+  "jest": {
+    "globals": {
+      "NODE_ENV": "development"
+    },
+    "modulePathIgnorePatterns": [
+      "<rootDir>/src/__tests__/helpers"
+    ]
+  },
+  "scripts": {
+    "build": "cross-env NODE_ENV='production' gulp dist",
+    "start": "node server/server.js",
+    "test": "jest",
+    "eslint-run": "gulp pre-commit"
+  },
+  "pre-commit": [
+    "eslint-run"
+  ]
+}
