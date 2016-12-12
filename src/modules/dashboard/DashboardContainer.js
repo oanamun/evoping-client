@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Table } from 'reactstrap';
+import { Link } from 'react-router';
 
 class DashboardContainer extends Component { // eslint-disable-line
   render() {
@@ -16,7 +17,7 @@ class DashboardContainer extends Component { // eslint-disable-line
         <tbody>
           <tr>
             <th scope="row">1</th>
-            <td>Evo live</td>
+            <td><Link className="nav-link" to="/device/1">Evo live</Link></td>
             <td>Evotalks</td>
             <td>
               <span className="tag tag-danger tag-pill">
@@ -26,7 +27,7 @@ class DashboardContainer extends Component { // eslint-disable-line
           </tr>
           <tr>
             <th scope="row">2</th>
-            <td>Evo staging</td>
+            <td><Link className="nav-link" to="/device/1">Evo staging</Link></td>
             <td>Evotalks</td>
             <td>
               <span className="tag tag-success tag-pill">
@@ -36,7 +37,7 @@ class DashboardContainer extends Component { // eslint-disable-line
           </tr>
           <tr>
             <th scope="row">3</th>
-            <td>SIIT staging</td>
+            <td><Link className="nav-link" to="/device/1">SIIT staging</Link></td>
             <td>SIIT</td>
             <td>
               <span className="tag tag-success tag-pill">
