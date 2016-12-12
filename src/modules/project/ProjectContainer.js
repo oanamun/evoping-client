@@ -1,10 +1,16 @@
 import React, { Component } from 'react';
+import AddProjectContainer from 'modules/project/add-project/AddProjectContainer';
+import ProjectList from 'modules/project/components/ProjectList';
 
 class ProjectContainer extends Component { // eslint-disable-line
 
   render() {
     return (
-      <div> Prj Cont </div>
+      <div>
+        <AddProjectContainer />
+        Project List
+        <ProjectList />
+      </div>
     );
   }
 }
