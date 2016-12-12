@@ -1,6 +1,5 @@
-import React, { PropTypes, Component } from 'react';
+import React, { Component } from 'react';
 import { Link } from 'react-router';
-import { UsersContainer } from 'modules/users';
 
 class HeaderContainer extends Component { // eslint-disable-line
   render() {
@@ -8,6 +7,7 @@ class HeaderContainer extends Component { // eslint-disable-line
       <div>
         <Link to="/">Home</Link>
         <Link to="/users">Users Page</Link>
+        <Link to="/login">Login</Link>
       </div>
     );
   }
