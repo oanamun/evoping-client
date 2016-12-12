@@ -7,6 +7,7 @@ class HeaderContainer extends Component { // eslint-disable-line
       <div>
         <Link to="/">Home</Link>
         <Link to="/users">Users Page</Link>
+        <Link to="/projects">Projects Page</Link>
         <Link to="/login">Login</Link>
       </div>
     );
