@@ -2,3 +2,22 @@
 //
 // Copy variables from `_variables.scss` to this file to override default values
 // without modifying source files.
+
+$gray-dark:                 #1b2431;
+$gray:                      #273142;
+$gray-light:                #313d4f;
+$gray-lighter:              #eceeef;
+$gray-lightest:             #f7f7f9;
+
+$brand-primary:             #2499f2;
+$brand-success:             #66b92e;
+$brand-info:                #5bc0de;
+$brand-warning:             #da932c;
+$brand-danger:              #d65b4a;
+
+$tag-padding-y:             .5em;
+$tag-pill-padding-x:        1em;
+
+$body-color:                $gray-lightest;
+
+$table-cell-padding:         1rem;
