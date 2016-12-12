@@ -6,7 +6,7 @@ const propTypes = {
   projects: PropTypes.array,
 };
 const defaultProps = {
-  projects: [1, 2],
+  projects: ['Evotalks', 'SIIT'],
 };
 function ProjectList({ projects }) {
   return (
