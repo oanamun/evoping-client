@@ -3,6 +3,7 @@ import { Match, Redirect, Miss } from 'react-router';
 import HeaderContainer from 'modules/header/HeaderContainer';
 import LoginContainer from 'modules/login/LoginContainer';
 import DashboardContainer from 'modules/dashboard/DashboardContainer';
+import ProjectContainer from 'modules/project/ProjectContainer';
 import DeviceContainer from 'modules/device/DeviceContainer';
 
 const propTypes = {
@@ -21,6 +22,10 @@ class MainContainer extends Component { // eslint-disable-line
                 pattern={`${this.props.pathname}`}
                 exactly
                 component={DashboardContainer}
+              />
+              <Match
+                pattern={`${this.props.pathname}projects`}
+                component={ProjectContainer}
               />
               <Match
                 pattern={`${this.props.pathname}login`}

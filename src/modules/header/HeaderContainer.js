@@ -5,6 +5,7 @@ import { Navbar, NavbarBrand, Nav, NavItem } from 'reactstrap';
 class HeaderContainer extends Component { // eslint-disable-line
   render() {
     return (
+
       <Navbar color="faded" className="mb-3 px-3" >
         <NavbarBrand>EvoPing</NavbarBrand>
         <Nav navbar>
