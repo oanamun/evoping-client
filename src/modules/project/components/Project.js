@@ -1,18 +1,29 @@
 import React, { PropTypes } from 'react';
-import { ListGroupItem, Tag } from 'reactstrap';
+import { ListGroupItem, Tag, Button, Collapse  } from 'reactstrap';
 
 const propTypes = {
-  info: PropTypes.number,
+  info: PropTypes.string,
 };
 
 function Project({ info }) {
   return (
     <ListGroupItem>
-      {info} name
-      devices
-      <Tag pill> 12</Tag>
-      members
-      <Tag pill> 12</Tag>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-3">
+            <strong>{info} </strong>
+          </div>
+          <div className="col-md-3">
+            <Tag color="primary" pill>2</Tag> devices
+          </div>
+          <div className="col-md-3">
+            <Tag color="primary" pill>12</Tag> members
+          </div>
+          <div className="col-md-3">
+            <Button color="primary">+</Button>
+          </div>
+        </div>
+      </div>
     </ListGroupItem>);
 }
 

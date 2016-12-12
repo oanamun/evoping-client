@@ -4,12 +4,11 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 class AddProjectContainer extends Component { // eslint-disable-line
   render() {
     return (
-      <Form inline>
+      <Form inline className="mb-2">
         <FormGroup>
-          <Label for="projectName">Project Name</Label>{' '}
           <Input type="text" name="project" id="projectName" placeholder="Project Name" />
         </FormGroup>
-        <Button>Submit</Button>
+        <Button className="ml-1" outline color="primary">Add</Button>
       </Form>
     );
   }

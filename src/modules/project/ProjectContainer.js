@@ -8,7 +8,6 @@ class ProjectContainer extends Component { // eslint-disable-line
     return (
       <div>
         <AddProjectContainer />
-        Project List
         <ProjectList />
       </div>
     );
