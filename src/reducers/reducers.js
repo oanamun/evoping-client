@@ -1,6 +1,6 @@
 import { combineReducers } from 'redux';
-import { usersStore } from 'modules/users';
+import { loginStore } from 'modules/login/loginStore';
 
 export default combineReducers({
-  users: usersStore,
+  login: loginStore,
 });
