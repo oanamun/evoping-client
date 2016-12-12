@@ -8,17 +8,25 @@ class LoginContainer extends Component { // eslint-disable-line
 
   render() {
     return (
-      <Form>
-        <FormGroup>
-          <Label for="email">Email</Label>
-          <Input type="email" name="email" id="email" />
-        </FormGroup>
-        <FormGroup>
-          <Label for="password">Password</Label>
-          <Input type="password" name="password" id="password" />
-        </FormGroup>
-        <Button onClick={this.login} outline color="primary">Login</Button>
-      </Form>
+      <div className="container">
+        <div className="row">
+          <div className="col-md-4 mx-auto">
+            <Form>
+              <FormGroup>
+                <Label for="email">Email</Label>
+                <Input type="email" name="email" id="email" />
+              </FormGroup>
+              <FormGroup>
+                <Label for="password">Password</Label>
+                <Input type="password" name="password" id="password" />
+              </FormGroup>
+              <Button onClick={this.login} outline color="primary">
+                Login
+              </Button>
+            </Form>
+          </div>
+        </div>
+      </div>
     );
   }
 }

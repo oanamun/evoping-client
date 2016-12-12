@@ -1,15 +1,27 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router';
+import { Navbar, NavbarBrand, Nav, NavItem } from 'reactstrap';
 
 class HeaderContainer extends Component { // eslint-disable-line
   render() {
     return (
-      <div>
-        <Link to="/">Home</Link>
-        <Link to="/users">Users Page</Link>
-        <Link to="/projects">Projects Page</Link>
-        <Link to="/login">Login</Link>
-      </div>
+
+      <Navbar color="faded" className="mb-3 px-3" >
+        <NavbarBrand>EvoPing</NavbarBrand>
+        <Nav navbar>
+          <NavItem>
+            <Link className="nav-link" to="/">Dashboard</Link>
+          </NavItem>
+          <NavItem>
+            <Link className="nav-link" to="/projects">Projects</Link>
+          </NavItem>
+        </Nav>
+        <Nav className="float-xs-right" navbar>
+          <NavItem>
+            <Link className="nav-link" to="/login">Login</Link>
+          </NavItem>
+        </Nav>
+      </Navbar>
     );
   }
 }
