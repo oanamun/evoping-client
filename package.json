@@ -6,9 +6,11 @@
     "url": "https://github.com/evozonjs/evoping-client"
   },
   "dependencies": {
+    "chart.js": "^2.4.0",
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.4.1",
     "react-addons-transition-group": "^15.4.1",
+    "react-chartjs-2": "^1.6.0",
     "react-dom": "^15.3.2",
     "react-intl": "^2.1.5",
     "react-redux": "^4.4.5",
