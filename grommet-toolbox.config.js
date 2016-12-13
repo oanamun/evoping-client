@@ -1,5 +1,6 @@
 import path from 'path';
 import webpack from 'webpack';
+
 const argv = require('yargs').argv;
 
 const NODE_ENV = argv.NODE_ENV;
@@ -22,7 +23,7 @@ export default {
     },
     plugins: [
       new webpack.ProvidePlugin({
-        fetch: 'exports?self.fetch!whatwg-fetch'
+        fetch: 'imports?this=>global!exports?global.fetch!whatwg-fetch'
       })
     ]
   },

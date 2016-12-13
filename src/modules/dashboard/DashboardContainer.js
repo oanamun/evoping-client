@@ -1,9 +1,19 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { Table } from 'reactstrap';
-import { Link } from 'react-router';
+import DevicesTableRow from './components/DevicesTableRow';
+
+const propTypes = {
+  devices: PropTypes.array.isRequired,
+};
+
+const defaultProps = {
+  devices: [],
+};
 
 class DashboardContainer extends Component { // eslint-disable-line
   render() {
+    const { devices } = this.props;
     return (
       <Table inverse responsive>
         <thead>
@@ -15,40 +25,30 @@ class DashboardContainer extends Component { // eslint-disable-line
           </tr>
         </thead>
         <tbody>
-          <tr>
-            <th scope="row">1</th>
-            <td><Link className="nav-link" to="/device/1">Evo live</Link></td>
-            <td>Evotalks</td>
-            <td>
-              <span className="tag tag-danger tag-pill">
-                down
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">2</th>
-            <td><Link className="nav-link" to="/device/1">Evo staging</Link></td>
-            <td>Evotalks</td>
-            <td>
-              <span className="tag tag-success tag-pill">
-                working
-              </span>
-            </td>
-          </tr>
-          <tr>
-            <th scope="row">3</th>
-            <td><Link className="nav-link" to="/device/1">SIIT staging</Link></td>
-            <td>SIIT</td>
-            <td>
-              <span className="tag tag-success tag-pill">
-                working
-              </span>
-            </td>
-          </tr>
+          {devices.map((device, index) => (
+            <DevicesTableRow
+              key={index}
+              index={index}
+              device={device}
+            />
+          ))}
         </tbody>
       </Table>
     );
   }
 }
 
-export default DashboardContainer;
+const mapStateToProps = (state) => ({
+  devices: [
+    { id: 1, name: 'Evo live', project: 'Evotalks', status: 0 },
+    { id: 2, name: 'Evo staging', project: 'Evotalks', status: 1 },
+    { id: 3, name: 'SIIT live', project: 'SIIT', status: 1 },
+    { id: 4, name: 'Un doi', project: '12', status: 1 },
+  ],
+});
+
+DashboardContainer.propTypes = propTypes;
+DashboardContainer.defaultProps = defaultProps;
+
+export default connect(mapStateToProps)(DashboardContainer);
+
