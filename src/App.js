@@ -5,6 +5,7 @@ import store from 'store/store';
 import 'assets/styles/styles.scss';
 import 'chart.js';
 import MainContainer from 'modules/main/MainContainer';
+import 'utils/apiGenerateFake';
 
 export default function App() {
   return (
