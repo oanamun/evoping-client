@@ -74,6 +74,7 @@
     "build": "cross-env NODE_ENV='production' gulp dist",
     "start": "node server/server.js",
     "test": "jest",
+    "dev": "gulp dev",
     "eslint-run": "gulp pre-commit"
   },
   "pre-commit": [
