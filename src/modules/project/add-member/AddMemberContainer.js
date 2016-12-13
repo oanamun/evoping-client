@@ -28,6 +28,7 @@ class AddMemberContainer extends Component { // eslint-disable-line
     ];
     return (
       <Select
+        className="members-select"
         name="form-field-name"
         multi={isMulti}
         options={options}
