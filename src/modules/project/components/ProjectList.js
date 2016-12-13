@@ -1,18 +1,20 @@
 import React, { PropTypes } from 'react';
 import { ListGroup } from 'reactstrap';
-import Project from 'modules/project/components/Project';
+import ProjectListItem from 'modules/project/components/ProjectListItem';
 
 const propTypes = {
   projects: PropTypes.array,
 };
+
 const defaultProps = {
-  projects: ['Evotalks', 'SIIT'],
+  projects: [],
 };
+
 function ProjectList({ projects }) {
   return (
     <ListGroup>
-      {projects.map((elem, index) =>
-        <Project info={elem} key={index} />
+      {projects.map((project, index) =>
+        <ProjectListItem project={project} key={index} />
         )}
     </ListGroup>);
 }

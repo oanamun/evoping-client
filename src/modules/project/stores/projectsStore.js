@@ -18,16 +18,29 @@ export function addProject(payload) {
 
 // ------- REDUCER --------
 const initialState = {
-  projects: [],
+  projects: [
+    {
+      id: 1,
+      name: 'Evotalks',
+      devices: 2,
+      members: 12,
+    },
+    {
+      id: 2,
+      name: 'SIIT',
+      devices: 5,
+      members: 10,
+    },
+  ],
 };
 
 export function projectsStore(state = initialState, { type, payload }) {
   switch (type) {
     case GET_PROJECTS: {
-      return { ...state, projects: payload };
+      return state;
     }
     case ADD_PROJECT: {
-      const projects = state.project.concat(payload);
+      const projects = state.projects.concat(payload);
       return { ...state, projects };
     }
     default: {
