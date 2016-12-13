@@ -1,0 +1,17 @@
+.members-select {
+  margin: 1rem 0;
+  .Select-control{
+    border-color: $blue;
+    background: $dark-grey;
+    color: $blue;
+    .Select-clear-zone {
+      color:$blue;
+    }
+    .Select-arrow-zone .Select-arrow {
+      border-color:$blue transparent transparent;
+    }
+    .Select-value-label {
+      color:$blue;
+    }
+  }
+}
