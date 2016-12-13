@@ -58,7 +58,7 @@ class HeaderContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  user: state.login.loggedInUser,
+  user: state.loginStore.loggedInUser,
 });
 
 const mapDispatchToProps = {

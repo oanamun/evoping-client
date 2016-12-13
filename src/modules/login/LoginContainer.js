@@ -69,8 +69,8 @@ class LoginContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
-  error: state.login.error,
-  redirectToHome: state.login.redirectToHome,
+  error: state.loginStore.error,
+  redirectToHome: state.loginStore.redirectToHome,
 });
 
 const mapDispatchToProps = {

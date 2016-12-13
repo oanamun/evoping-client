@@ -10,10 +10,11 @@ class AddMemberContainer extends Component { // eslint-disable-line
     };
     this.handleChange = this.handleChange.bind(this);
   }
+
   handleChange(elms) {
-    console.log('eeeee', elms);
     this.setState({ values: elms });
   }
+
   render() {
     const isMulti = true;
     const options = [
