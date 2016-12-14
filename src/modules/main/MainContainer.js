@@ -32,7 +32,7 @@ class MainContainer extends Component { // eslint-disable-line
                 component={LoginContainer}
               />
               <Match
-                pattern={`${this.props.pathname}device/1`}
+                pattern={`${this.props.pathname}device/:id`}
                 component={DeviceContainer}
               />
               <Miss render={() => (<Redirect to="/" />)} />

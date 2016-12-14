@@ -6,6 +6,5 @@ import { deviceStore } from 'modules/device/stores/deviceStore';
 export default combineReducers({
   loginStore,
   projectsStore,
-  login: loginStore,
-  device: deviceStore,
+  deviceStore,
 });

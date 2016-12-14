@@ -35,14 +35,14 @@ class ProjectListItem extends Component {
             </div>
             <div className="col-md-3">
               <Tag color="primary" pill>{project.members}</Tag> members
-              <Collapse isOpen={this.state.isOpen}>
-                <AddMemberContainer />
-              </Collapse>
             </div>
             <div className="col-md-3">
               <Button color="primary" onClick={this.toggle}>
-                <i className="fa fa-user-plus" />
+                add
               </Button>
+              <Collapse isOpen={this.state.isOpen}>
+                <AddMemberContainer />
+              </Collapse>
             </div>
           </div>
         </div>

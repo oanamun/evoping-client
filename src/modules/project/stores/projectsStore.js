@@ -31,6 +31,12 @@ const initialState = {
       devices: 5,
       members: 10,
     },
+    {
+      id: 3,
+      name: 'Un doi',
+      devices: 1,
+      members: 5,
+    },
   ],
 };
 

@@ -4,22 +4,22 @@ import DeviceDetails from './components/DeviceDetails';
 import DeviceGraph from './components/DeviceGraph';
 
 const propTypes = {
-  currentGraph: PropTypes.object.isRequired,
-  currentDevice: PropTypes.object.isRequired,
+  graph: PropTypes.object.isRequired,
+  device: PropTypes.object.isRequired,
 };
 
 const defaultProps = {
-  currentGraph: {},
-  currentDevice: {},
+  graph: {},
+  device: {},
 };
 
 class DeviceContainer extends Component { // eslint-disable-line
   render() {
-    const { currentGraph, currentDevice } = this.props;
+    const { graph, device } = this.props;
     return (
       <div>
-        <DeviceDetails currentDevice={currentDevice} />
-        <DeviceGraph currentGraph={currentGraph} />
+        <DeviceDetails device={device} />
+        <DeviceGraph graph={graph} />
       </div>
     );
   }
@@ -28,9 +28,13 @@ class DeviceContainer extends Component { // eslint-disable-line
 DeviceContainer.propTypes = propTypes;
 DeviceContainer.defaultProps = defaultProps;
 
-const mapStateToProps = (state) => ({
-  currentGraph: state.device.currentGraph,
-  currentDevice: state.device.currentDevice,
+function findById(devices, id) {
+  return devices.find((item) => item.id === parseInt(id, 10));
+}
+
+const mapStateToProps = (state, ownProps) => ({
+  device: findById(state.deviceStore.devices, ownProps.params.id),
+  graph: state.deviceStore.currentGraph,
 });
 
 export default connect(mapStateToProps)(DeviceContainer);

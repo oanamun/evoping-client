@@ -43,7 +43,7 @@ class HeaderContainer extends Component {
               <NavItem>{this.props.user.email}</NavItem>
               <NavItem>
                 <Button onClick={this.logout} outline color="primary">
-                  <i className="fa fa-sign-out" />
+                  logout
                 </Button>
               </NavItem>
             </span> :

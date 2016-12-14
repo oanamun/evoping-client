@@ -4,7 +4,7 @@ import store from 'store/store';
 export default function generateResponse() {
   const timeStamp = 5000;
   const limitTime = 100;
-  const nrChecks = 10;
+  const nrChecks = 5;
 
   setInterval(() => {
     const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');

@@ -9,12 +9,40 @@ export const RECEIVEDCHECK = 'device/RECEIVEDCHECK';
 
 // ------- REDUCER --------
 const initialState = {
-  currentDevice: {
-    id: 1,
-    name: 'Device 1',
-    description: 'This is a summary description',
-    host: 'http://www.chris.com',
-  },
+  devices: [
+    {
+      id: 1,
+      name: 'Evo live',
+      description: 'This is a summary description',
+      host: 'http://evotalks.evozon.com',
+      status: 1,
+      project_id: 1,
+    },
+    {
+      id: 2,
+      name: 'Evo staging',
+      description: 'This is a summary description',
+      host: 'http://staging-evotalks.evozon.com',
+      status: 0,
+      project_id: 1,
+    },
+    {
+      id: 3,
+      name: 'SIIT',
+      description: 'This is a summary description',
+      host: 'http://www.scolainformaladeit.com',
+      status: 1,
+      project_id: 2,
+    },
+    {
+      id: 4,
+      name: 'Un doi',
+      description: 'This is a summary description',
+      host: 'http://www.undoi.com',
+      status: 1,
+      project_id: 3,
+    },
+  ],
   currentGraph: {
     maxTime: 6,
     labels: [],
