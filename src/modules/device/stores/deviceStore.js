@@ -1,11 +1,45 @@
 import graphStyle from '../deviceStyle';
+import { URL_API } from './../../../services/Api';
 
 export const RECEIVEDCHECK = 'device/RECEIVEDCHECK';
-
+export const ADD_DEVICE = 'device/ADD_DEVICE';
+export const DEVICE_SUCCESS = 'device/DEVICE_SUCCESS';
+export const DEVICE_ERROR = 'device/DEVICE_ERROR';
 // --------- ACTION CREATORS ----------
 // export function receviedResponseTime(payload) {
 //
 // }
+export function addDevice(deviceInfo) {
+  const device = {
+    name: deviceInfo.name,
+    description: deviceInfo.description,
+    public: deviceInfo.public,
+    project_id: deviceInfo.currentProject.value,
+  };
+  return (dispatch) => {
+    fetch(`${URL_API}/device`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(device),
+    })
+      .then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          dispatch({
+            type: DEVICE_SUCCESS,
+            payload: response.data, //TODO update when api is available
+          });
+        }
+        throw new Error(response.statusText);
+      })
+      .catch(() => {
+        dispatch({
+          type: DEVICE_ERROR,
+        });
+      });
+  };
+}
 
 // ------- REDUCER --------
 const initialState = {
@@ -15,6 +49,7 @@ const initialState = {
     description: 'This is a summary description',
     host: 'http://www.chris.com',
   },
+  deviceList: [],
   currentGraph: {
     maxTime: 6,
     labels: [],
@@ -69,6 +104,10 @@ export function deviceStore(state = initialState, { type, payload }) {
           datasets: newDataSets,
         },
       };
+    }
+    case DEVICE_SUCCESS: {
+      const deviceList = state.deviceList.concat(payload);
+      return { ...state, deviceList };
     }
     default: {
       return state;
