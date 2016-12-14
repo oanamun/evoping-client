@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import DeviceDetails from './components/DeviceDetails';
 import DeviceGraph from './components/DeviceGraph';
-import AddDeviceForm from './add-device/components/AddDeviceForm';
+import AddDeviceContainer from './add-device/AddDeviceContainer';
+
 const currentDevice = {
   id: 1,
   name: 'Device1',
@@ -27,7 +28,7 @@ class DeviceContainer extends Component { // eslint-disable-line
   render() {
     return (
       <div>
-        <AddDeviceForm />
+        <AddDeviceContainer />
         <DeviceDetails currentDevice={currentDevice} />
         <DeviceGraph currentGraph={currentGraph} />
       </div>
