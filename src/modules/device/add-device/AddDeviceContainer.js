@@ -1,5 +1,14 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
+import { addDevice } from './../stores/deviceStore';
 import AddDeviceForm from './components/AddDeviceForm';
+
+const propTypes = {
+  dispatchAddDevice: PropTypes.func,
+};
+const defaultProps = {
+  dispatchAddDevice: () => {},
+};
 
 class AddDeviceContainer extends Component {
   constructor(props) {
@@ -9,6 +18,7 @@ class AddDeviceContainer extends Component {
         name: '',
         description: '',
         public: false,
+        currentProject: { label: 2, value: 'val2' },
       },
     };
     this.handleSave = this.handleSave.bind(this);
@@ -16,9 +26,9 @@ class AddDeviceContainer extends Component {
   }
   handleSave(evt) {
     evt.preventDefault();
+    this.props.dispatchAddDevice(this.state.deviceInfo);
   }
   updateField(evt) {
-    console.log(evt.currentTarget.value, evt.currentTarget.name);
     const { name, value } = evt.currentTarget;
     const device = this.state.deviceInfo;
     if (name === 'selectPublic') {
@@ -30,10 +40,23 @@ class AddDeviceContainer extends Component {
   }
   render() {
     return (
-      <AddDeviceForm handleSubmit={this.handleSave} onUpdateField={this.updateField} />
+      <AddDeviceForm
+        handleSubmit={this.handleSave}
+        onUpdateField={this.updateField}
+        currentProject={this.state.deviceInfo.currentProject}
+      />
     );
   }
 }
+const mapStateToProps = (state) => ({
 
-export default AddDeviceContainer;
+});
+const mapDispatchToProps = {
+  dispatchAddDevice: addDevice,
+};
+
+AddDeviceContainer.propTypes = propTypes;
+AddDeviceContainer.defaultProps = defaultProps;
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddDeviceContainer);
 
