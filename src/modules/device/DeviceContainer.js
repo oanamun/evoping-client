@@ -1,31 +1,22 @@
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import DeviceDetails from './components/DeviceDetails';
 import DeviceGraph from './components/DeviceGraph';
 import AddDeviceContainer from './add-device/AddDeviceContainer';
 
-const currentDevice = {
-  id: 1,
-  name: 'Device1',
-  description: 'This is a summary description',
-  host: 'http://www.chris.com',
+const propTypes = {
+  currentGraph: PropTypes.object.isRequired,
+  currentDevice: PropTypes.object.isRequired,
 };
 
-const currentGraph = [{
-  id: 1,
-  name: 'Check 1',
-}, {
-  id: 2,
-  name: 'Check 2',
-}, {
-  id: 3,
-  name: 'Check 3',
-}, {
-  id: 4,
-  name: 'Check 4',
-}];
+const defaultProps = {
+  currentGraph: {},
+  currentDevice: {},
+};
 
 class DeviceContainer extends Component { // eslint-disable-line
   render() {
+    const { currentGraph, currentDevice } = this.props;
     return (
       <div>
         <AddDeviceContainer />
@@ -36,4 +27,12 @@ class DeviceContainer extends Component { // eslint-disable-line
   }
 }
 
-export default DeviceContainer;
+DeviceContainer.propTypes = propTypes;
+DeviceContainer.defaultProps = defaultProps;
+
+const mapStateToProps = (state) => ({
+  currentGraph: state.device.currentGraph,
+  currentDevice: state.device.currentDevice,
+});
+
+export default connect(mapStateToProps)(DeviceContainer);
