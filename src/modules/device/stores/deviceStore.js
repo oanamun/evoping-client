@@ -1,11 +1,14 @@
 import graphStyle from '../deviceStyle';
 
 export const RECEIVEDCHECK = 'device/RECEIVEDCHECK';
+export const GET_DEVICES = 'device/GET_DEVICES';
 
 // --------- ACTION CREATORS ----------
-// export function receviedResponseTime(payload) {
-//
-// }
+export function getDevices() {
+  return {
+    type: GET_DEVICES,
+  };
+}
 
 // ------- REDUCER --------
 const initialState = {
@@ -52,6 +55,9 @@ const initialState = {
 
 export function deviceStore(state = initialState, { type, payload }) {
   switch (type) {
+    case GET_DEVICES: {
+      return state;
+    }
     case RECEIVEDCHECK: {
       // console.log(payload);
       const newLabels = state.currentGraph.labels;

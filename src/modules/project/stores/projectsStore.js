@@ -1,6 +1,9 @@
+import { getDevices } from '../../device/stores/deviceStore';
 // --------- ACTIONS
 export const GET_PROJECTS = 'users/GET_PROJECTS';
 export const ADD_PROJECT = 'users/ADD_PROJECT';
+export const EDIT_PROJECT = 'users/EDIT_PROJECT';
+export const DELETE_PROJECT = 'users/DELETE_PROJECT';
 
 // --------- ACTION CREATORS ----------
 export function getProjects() {
@@ -13,6 +16,23 @@ export function addProject(payload) {
   return {
     type: ADD_PROJECT,
     payload,
+  };
+}
+
+export function editProject(payload) {
+  return {
+    type: EDIT_PROJECT,
+    payload,
+  };
+}
+
+export function deleteProject(payload) {
+  return (dispatch) => {
+    dispatch(getDevices());
+    dispatch({
+      type: DELETE_PROJECT,
+      payload,
+    });
   };
 }
 
@@ -47,6 +67,20 @@ export function projectsStore(state = initialState, { type, payload }) {
     }
     case ADD_PROJECT: {
       const projects = state.projects.concat(payload);
+      return { ...state, projects };
+    }
+    case EDIT_PROJECT: {
+      const projects = state.projects.map((project) => {
+        if (project.id === payload.id) {
+          return payload;
+        }
+        return project;
+      });
+      return { ...state, projects };
+    }
+    case DELETE_PROJECT: {
+      const projects = state.projects.filter((project) =>
+      project.id !== parseInt(payload.id, 10));
       return { ...state, projects };
     }
     default: {
