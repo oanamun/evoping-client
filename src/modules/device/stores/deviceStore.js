@@ -9,12 +9,12 @@ export const DEVICE_ERROR = 'device/DEVICE_ERROR';
 // export function receviedResponseTime(payload) {
 //
 // }
-export function addDevice(deviceInfo) {
+export function addDevice({ name, description, isPublic, currentProject }) {
   const device = {
-    name: deviceInfo.name,
-    description: deviceInfo.description,
-    public: deviceInfo.public,
-    project_id: deviceInfo.currentProject.value,
+    name,
+    description,
+    public: isPublic,
+    projectId: currentProject.value,
   };
   return (dispatch) => {
     fetch(`${URL_API}/device`, {

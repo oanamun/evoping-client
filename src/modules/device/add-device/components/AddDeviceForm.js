@@ -4,48 +4,49 @@ import Select from 'react-select';
 
 const propTypes = {
   handleSubmit: PropTypes.func.isRequired,
-  updateField: PropTypes.func.isRequired,
+  onUpdateField: PropTypes.func.isRequired,
   projectsList: PropTypes.array,
   currentProject: PropTypes.object,
 };
 const defaultProps = {
   handleSubmit: () => {},
-  updateField: () => {},
+  onUpdateField: () => {},
   projectsList: [{ label: 1, value: 'val1' }, { label: 2, value: 'val2' }],
   currentProject: { label: 2, value: 'val2' },
 };
 
-function AddDeviceForm(params) {
+function AddDeviceForm({ handleSubmit, onUpdateField, currentProject, projectsList }) {
   return (
-    <Form onSubmit={params.handleSubmit}>
+    <Form onSubmit={handleSubmit}>
       <FormGroup >
         <Label for="deviceName">Device name</Label>
-        <Input onChange={params.onUpdateField} type="text" name="name" id="deviceName" required placeholder="enter device name" />
+        <Input onChange={onUpdateField} type="text" name="name" id="deviceName" required placeholder="enter device name" />
       </FormGroup>
       <FormGroup>
         <Label for="deviceDescription">Device description</Label>
-        <Input onChange={params.onUpdateField} type="text" name="description" id="deviceDescription" placeholder="enter device description" />
+        <Input onChange={onUpdateField} type="text" name="description" id="deviceDescription" placeholder="enter device description" />
       </FormGroup>
       <FormGroup>
         <Label for="public">Public</Label>
-        <Input onChange={params.onUpdateField} type="select" name="selectPublic" id="public">
+        <Input onChange={onUpdateField} type="select" name="selectPublic" id="public">
           <option>No</option>
           <option>Yes</option>
         </Input>
       </FormGroup>
       <FormGroup>
+        <Label for="selectProject">Select Project</Label>
         <Select
-          className="members-select"
+          id="selectProject"
           name="currentProject"
-          currentProject={params.currentProject}
-          options={params.projectsList}
+          currentProject={currentProject}
+          options={projectsList}
           onChange={(option) => {
-            params.onUpdateField({ currentTarget: {
+            onUpdateField({ currentTarget: {
               name: 'currentProject',
               value: option },
             });
           }}
-          value={params.currentProject}
+          value={currentProject}
           placeholder={'Select project'}
         />
       </FormGroup>
@@ -54,7 +55,7 @@ function AddDeviceForm(params) {
   );
 }
 
-AddDeviceForm.PropTypes = propTypes;
+AddDeviceForm.propTypes = propTypes;
 AddDeviceForm.defaultProps = defaultProps;
 
 export default AddDeviceForm;

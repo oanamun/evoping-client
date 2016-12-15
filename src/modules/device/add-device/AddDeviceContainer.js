@@ -17,7 +17,7 @@ class AddDeviceContainer extends Component {
       deviceInfo: {
         name: '',
         description: '',
-        public: false,
+        isPublic: false,
         currentProject: { label: 2, value: 'val2' },
       },
     };
@@ -32,7 +32,7 @@ class AddDeviceContainer extends Component {
     const { name, value } = evt.currentTarget;
     const device = this.state.deviceInfo;
     if (name === 'selectPublic') {
-      device.public = value === 'Yes' ? 1 : 0;
+      device.isPublic = value === 'Yes' ? 1 : 0;
     } else {
       device[name] = value;
     }
@@ -48,9 +48,6 @@ class AddDeviceContainer extends Component {
     );
   }
 }
-const mapStateToProps = (state) => ({
-
-});
 const mapDispatchToProps = {
   dispatchAddDevice: addDevice,
 };
@@ -58,5 +55,5 @@ const mapDispatchToProps = {
 AddDeviceContainer.propTypes = propTypes;
 AddDeviceContainer.defaultProps = defaultProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddDeviceContainer);
+export default connect(null, mapDispatchToProps)(AddDeviceContainer);
 
