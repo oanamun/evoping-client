@@ -1,3 +1,4 @@
+import { socketAuthenticate } from './../../login/loginStore';
 import graphStyle from '../deviceStyle';
 import { URL_API } from './../../../services/Api';
 
@@ -45,6 +46,37 @@ export function addDevice({ name, description, isPublic, currentProject }) {
   };
 }
 
+export function loadGraph() {
+  return (dispatch, getState) => {
+    const checkId = getState().deviceStore.currentGraph.checkId;
+    const { socket } = getState().loginStore;
+    console.log(socket);
+    if (socket) {
+      // here sould run but it has an exced limit call
+      socket.emit('join', checkId);
+      socket.on('check', (data) => {
+        console.log(RECEIVEDCHECK);
+        const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+        const payload = {
+          label: myDate,
+          responseTime: data,
+        };
+        dispatch({
+          type: RECEIVEDCHECK,
+          payload,
+        });
+      });
+    }
+  };
+}
+
+export function disconnectChanel() {
+  return (dispatch, getState) => {
+    // ASK MIHAI HOW TO STOP LISTENING FROM SOCKET.IO
+    // socketAuthenticate(dispatch, getState().loginStore.token);
+  };
+}
+
 // ------- REDUCER --------
 const initialState = {
   devices: [
@@ -82,9 +114,14 @@ const initialState = {
     },
   ],
   currentGraph: {
-    maxTime: 6,
+    checkId: 1,
+    maxTime: 16,
     labels: [],
-    datasets: [],
+    datasets: [{
+      label: 'Default check',
+      ...graphStyle(1),
+      data: [],
+    }],
   },
 };
 
@@ -100,37 +137,14 @@ export function deviceStore(state = initialState, { type, payload }) {
     case RECEIVEDCHECK: {
       // console.log(payload);
       const newLabels = state.currentGraph.labels;
+      const newDatasets = state.currentGraph.datasets[0].data;
       // init the time stamp
-      if (state.currentGraph.labels.length > state.currentGraph.maxTime) {
+      if (newLabels.length > state.currentGraph.maxTime) {
         // check if the time has past
         newLabels.shift();
+        newDatasets.shift();
       }
-      const newDataSets = [];
-      // add values to graph
-      for (let i = 0; i < payload.data.length; i = i + 1) {
-        let newDataSetCheck = [];
-        if (state.currentGraph.datasets[i]) {
-          newDataSetCheck = state.currentGraph.datasets[i].data;
-          // replace the old dots
-          if (newDataSetCheck.length > state.currentGraph.maxTime) {
-            newDataSetCheck.shift();
-          }
-          newDataSets.push({
-            ...state.currentGraph.datasets[i],
-            data: [
-              ...newDataSetCheck,
-              payload.data[i].responseMS,
-            ],
-          });
-        } else {
-          // init the check
-          newDataSets.push({
-            label: payload.data[i].checkName,
-            ...graphStyle(i),
-            data: [payload.data[i].responseMS],
-          });
-        }
-      }
+
       return {
         ...state,
         currentGraph: {
@@ -139,7 +153,13 @@ export function deviceStore(state = initialState, { type, payload }) {
             ...newLabels,
             payload.label,
           ],
-          datasets: newDataSets,
+          datasets: [{
+            label: 'Check 1',
+            data: [
+              ...newDatasets,
+              payload.responseTime,
+            ],
+          }],
         },
       };
     }

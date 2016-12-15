@@ -1,5 +1,7 @@
-import { URL_API } from './../../services/Api';
+import { RECEIVEDCHECK } from 'modules/device/stores/deviceStore';
 import io from 'socket.io-client';
+
+import { URL_API } from './../../services/Api';
 
 export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'login/LOGIN_ERROR';
@@ -8,22 +10,34 @@ export const SOCKET_CONNECT = 'socket/CONNECT';
 
 // --------- ACTION CREATORS ----------
 
-const socketAuthenticate = (dispatch, token) => {
+export const socketAuthenticate = (dispatch, token) => {
   const socket = io.connect(URL_API);
-  console.log('pana aici 2');
-  console.log(socket);
-  console.log(token);
   socket.on('connect', () => {
-    console.log('pana11');
     socket
       .emit('authenticate', { token })
       .on('authenticated', () => {
-        console.log('auth success');
-        const checkId = 1;
-        socket.emit('join', checkId);
-        socket.on('check', (data) => {
-          console.log(data);
+        dispatch({
+          type: SOCKET_CONNECT,
+          payload: {
+            socket,
+          },
         });
+        // end of comment
+        // const checkId = 1;
+        // socket.emit('join', checkId);
+        // socket.on('check', (data) => {
+        //   console.log(RECEIVEDCHECK);
+        //   const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+        //   const payload = {
+        //     label: myDate,
+        //     responseTime: data,
+        //   };
+        //   dispatch({
+        //     type: RECEIVEDCHECK,
+        //     payload,
+        //   });
+        // });
+        //  the end of the comment
       })
       .on('unauthorized', (msg) => {
         console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
@@ -74,6 +88,7 @@ const initialState = {
   token: getFromStorage('token') || '',
   redirectToHome: false,
   error: false,
+  // socket: null,
 };
 
 export function loginStore(state = initialState, { type, payload }) {
@@ -90,7 +105,10 @@ export function loginStore(state = initialState, { type, payload }) {
       };
     }
     case SOCKET_CONNECT: {
-      return { ...state };
+      return {
+        ...state,
+        socket: payload.socket,
+      };
     }
     case LOGIN_ERROR: {
       return { ...state, error: true };
