@@ -12,24 +12,24 @@
     "babel"
   ],
   "rules": {
-    "new-cap": ["error", { "properties": false }],
-    "no-use-before-define": ["error", { "functions": false, "classes": true }],
-    "operator-assignment": ["error", "never"],
-    "arrow-parens": ["error", "always"],
-    "consistent-return": ["error", { "treatUndefinedAsUnspecified": false }],
+    "new-cap": ["warn", { "properties": false }],
+    "no-use-before-define": ["warn", { "functions": false, "classes": true }],
+    "operator-assignment": ["warn", "never"],
+    "arrow-parens": ["warn", "always"],
+    "consistent-return": ["warn", { "treatUndefinedAsUnspecified": false }],
     "import/no-extraneous-dependencies": "off",
     "import/no-unresolved": "off",
     "import/extensions": "off",
-    "no-unused-vars": ["error", { "vars": "all", "args": "none" }],
+    "no-unused-vars": ["warn", { "vars": "all", "args": "none" }],
     "no-useless-escape": "off",
     "no-underscore-dangle": "off",
     "linebreak-style": "off",
     "react/jsx-filename-extension": ["warn", { "extensions": [".js", ".jsx"] }],
     "generator-star-spacing" : ["off"], // without, async and arrow function break
-    "brace-style": ["error"],
+    "brace-style": ["warn"],
     "babel/generator-star-spacing": "warn",
     "class-methods-use-this": ["off"],
-    "react/no-unused-prop-types": ["error", { "skipShapeProps": true }],
+    "react/no-unused-prop-types": ["warn", { "skipShapeProps": true }],
     "jsx-a11y/no-static-element-interactions": "off"
   }
 }

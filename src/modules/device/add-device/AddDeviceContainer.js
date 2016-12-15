@@ -4,9 +4,11 @@ import { addDevice } from './../stores/deviceStore';
 import AddDeviceForm from './components/AddDeviceForm';
 
 const propTypes = {
+  projects: PropTypes.array,
   dispatchAddDevice: PropTypes.func,
 };
 const defaultProps = {
+  projects: [],
   dispatchAddDevice: () => {},
 };
 
@@ -41,6 +43,7 @@ class AddDeviceContainer extends Component {
   render() {
     return (
       <AddDeviceForm
+        projects={this.props.projects}
         handleSubmit={this.handleSave}
         onUpdateField={this.updateField}
         currentProject={this.state.deviceInfo.currentProject}
@@ -48,6 +51,11 @@ class AddDeviceContainer extends Component {
     );
   }
 }
+
+const mapStateToProps = (state, ownProps) => ({
+  projects: state.projectsStore.projects,
+});
+
 const mapDispatchToProps = {
   dispatchAddDevice: addDevice,
 };
@@ -55,5 +63,5 @@ const mapDispatchToProps = {
 AddDeviceContainer.propTypes = propTypes;
 AddDeviceContainer.defaultProps = defaultProps;
 
-export default connect(null, mapDispatchToProps)(AddDeviceContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(AddDeviceContainer);
 

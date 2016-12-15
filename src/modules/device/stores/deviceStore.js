@@ -2,13 +2,17 @@ import graphStyle from '../deviceStyle';
 import { URL_API } from './../../../services/Api';
 
 export const RECEIVEDCHECK = 'device/RECEIVEDCHECK';
-export const ADD_DEVICE = 'device/ADD_DEVICE';
-export const DEVICE_SUCCESS = 'device/DEVICE_SUCCESS';
-export const DEVICE_ERROR = 'device/DEVICE_ERROR';
+export const GET_DEVICES = 'device/GET_DEVICES';
+export const ADD_DEVICE_SUCCESS = 'device/ADD_DEVICE_SUCCESS';
+export const ADD_DEVICE_ERROR = 'device/ADD_DEVICE_ERROR';
+
 // --------- ACTION CREATORS ----------
-// export function receviedResponseTime(payload) {
-//
-// }
+export function getDevices() {
+  return {
+    type: GET_DEVICES,
+  };
+}
+
 export function addDevice({ name, description, isPublic, currentProject }) {
   const device = {
     name,
@@ -27,7 +31,7 @@ export function addDevice({ name, description, isPublic, currentProject }) {
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
           dispatch({
-            type: DEVICE_SUCCESS,
+            type: ADD_DEVICE_SUCCESS,
             payload: response.data, //TODO update when api is available
           });
         }
@@ -35,7 +39,7 @@ export function addDevice({ name, description, isPublic, currentProject }) {
       })
       .catch(() => {
         dispatch({
-          type: DEVICE_ERROR,
+          type: ADD_DEVICE_ERROR,
         });
       });
   };
@@ -43,13 +47,40 @@ export function addDevice({ name, description, isPublic, currentProject }) {
 
 // ------- REDUCER --------
 const initialState = {
-  currentDevice: {
-    id: 1,
-    name: 'Device 1',
-    description: 'This is a summary description',
-    host: 'http://www.chris.com',
-  },
-  deviceList: [],
+  devices: [
+    {
+      id: 1,
+      name: 'Evo live',
+      description: 'This is a summary description',
+      host: 'http://evotalks.evozon.com',
+      status: 1,
+      project_id: 1,
+    },
+    {
+      id: 2,
+      name: 'Evo staging',
+      description: 'This is a summary description',
+      host: 'http://staging-evotalks.evozon.com',
+      status: 0,
+      project_id: 1,
+    },
+    {
+      id: 3,
+      name: 'SIIT',
+      description: 'This is a summary description',
+      host: 'http://www.scolainformaladeit.com',
+      status: 1,
+      project_id: 2,
+    },
+    {
+      id: 4,
+      name: 'Un doi',
+      description: 'This is a summary description',
+      host: 'http://www.undoi.com',
+      status: 1,
+      project_id: 3,
+    },
+  ],
   currentGraph: {
     maxTime: 6,
     labels: [],
@@ -59,6 +90,13 @@ const initialState = {
 
 export function deviceStore(state = initialState, { type, payload }) {
   switch (type) {
+    case GET_DEVICES: {
+      return state;
+    }
+    case ADD_DEVICE_SUCCESS: {
+      const devices = state.devices.concat(payload);
+      return { ...state, devices };
+    }
     case RECEIVEDCHECK: {
       // console.log(payload);
       const newLabels = state.currentGraph.labels;
@@ -104,10 +142,6 @@ export function deviceStore(state = initialState, { type, payload }) {
           datasets: newDataSets,
         },
       };
-    }
-    case DEVICE_SUCCESS: {
-      const deviceList = state.deviceList.concat(payload);
-      return { ...state, deviceList };
     }
     default: {
       return state;

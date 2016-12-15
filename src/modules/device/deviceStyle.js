@@ -3,8 +3,8 @@ export const colors = [
   '#d65b4a',
   '#da932c',
   '#2499f2',
+  '#9c6af2',
   '#ccda12',
-  '#be84f2',
 ];
 
 function style(color) {

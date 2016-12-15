@@ -36,6 +36,9 @@ class HeaderContainer extends Component {
           <NavItem>
             <Link className="nav-link" to="/projects">Projects</Link>
           </NavItem>
+          <NavItem>
+            <Link className="nav-link" to="/add-device">Add device</Link>
+          </NavItem>
         </Nav>
         <Nav className="float-xs-right" navbar>
           {this.props.user.email ?
@@ -43,7 +46,7 @@ class HeaderContainer extends Component {
               <NavItem>{this.props.user.email}</NavItem>
               <NavItem>
                 <Button onClick={this.logout} outline color="primary">
-                  <i className="fa fa-sign-out" />
+                  logout
                 </Button>
               </NavItem>
             </span> :
