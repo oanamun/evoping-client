@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import DeviceDetails from './components/DeviceDetails';
 import DeviceGraph from './components/DeviceGraph';
+import AddDeviceContainer from './add-device/AddDeviceContainer';
 
 const propTypes = {
   currentGraph: PropTypes.object.isRequired,
@@ -18,6 +19,7 @@ class DeviceContainer extends Component { // eslint-disable-line
     const { currentGraph, currentDevice } = this.props;
     return (
       <div>
+        <AddDeviceContainer />
         <DeviceDetails currentDevice={currentDevice} />
         <DeviceGraph currentGraph={currentGraph} />
       </div>
