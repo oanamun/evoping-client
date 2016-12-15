@@ -1,23 +1,20 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import ProjectList from 'modules/project/components/ProjectList';
+import { ListGroup } from 'reactstrap';
+import ProjectListItem from 'modules/project/components/ProjectListItem';
 import AddProjectForm from 'modules/project/components/AddProjectForm';
-import { getProjects, addProject, editProject, deleteProject } from './stores/projectsStore';
+import { getProjects, addProject } from './stores/projectsStore';
 
 const propTypes = {
   projects: PropTypes.array.isRequired,
   dispatchGetProjects: PropTypes.func,
   dispatchAddProject: PropTypes.func,
-  dispatchEditProject: PropTypes.func,
-  dispatchDeleteProject: PropTypes.func,
 };
 
 const defaultProps = {
   projects: [],
   dispatchGetProjects: () => {},
   dispatchAddProject: () => {},
-  dispatchEditProject: () => {},
-  dispatchDeleteProject: () => {},
 };
 
 class ProjectsContainer extends Component {
@@ -32,8 +29,6 @@ class ProjectsContainer extends Component {
       },
     };
     this.addProject = this.addProject.bind(this);
-    this.editProject = this.editProject.bind(this);
-    this.deleteProject = this.deleteProject.bind(this);
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
   }
 
@@ -54,14 +49,6 @@ class ProjectsContainer extends Component {
     this.props.dispatchAddProject(this.state.newProject);
   }
 
-  editProject(project) {
-    this.props.dispatchEditProject(project);
-  }
-
-  deleteProject(event) {
-    this.props.dispatchDeleteProject({ id: event.currentTarget.id });
-  }
-
   render() {
     return (
       <div>
@@ -69,11 +56,14 @@ class ProjectsContainer extends Component {
           onCreate={this.addProject}
           onFieldUpdate={this.onFieldUpdate}
         />
-        <ProjectList
-          projects={this.props.projects}
-          onDelete={this.deleteProject}
-          onEdit={this.editProject}
-        />
+        <ListGroup>
+          {this.props.projects.map((project, index) =>
+            <ProjectListItem
+              project={project}
+              key={project.id}
+            />
+          )}
+        </ListGroup>
       </div>
     );
   }
@@ -86,8 +76,6 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = {
   dispatchGetProjects: getProjects,
   dispatchAddProject: addProject,
-  dispatchEditProject: editProject,
-  dispatchDeleteProject: deleteProject,
 };
 
 ProjectsContainer.propTypes = propTypes;

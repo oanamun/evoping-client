@@ -1,9 +1,11 @@
 import { getDevices } from '../../device/stores/deviceStore';
 // --------- ACTIONS
-export const GET_PROJECTS = 'users/GET_PROJECTS';
-export const ADD_PROJECT = 'users/ADD_PROJECT';
-export const EDIT_PROJECT = 'users/EDIT_PROJECT';
-export const DELETE_PROJECT = 'users/DELETE_PROJECT';
+export const GET_PROJECTS = 'projects/GET_PROJECTS';
+export const ADD_PROJECT = 'projects/ADD_PROJECT';
+export const EDIT_PROJECT = 'projects/EDIT_PROJECT';
+export const DELETE_PROJECT = 'projects/DELETE_PROJECT';
+export const ADD_MEMBER = 'projects/ADD_MEMBER';
+export const REMOVE_MEMBER = 'projects/REMOVE_MEMBER';
 
 // --------- ACTION CREATORS ----------
 export function getProjects() {
@@ -36,26 +38,50 @@ export function deleteProject(payload) {
   };
 }
 
+export function addMember(payload) {
+  return {
+    type: ADD_MEMBER,
+    payload,
+  };
+}
+
+export function removeMember(payload) {
+  return {
+    type: REMOVE_MEMBER,
+    payload,
+  };
+}
+
 // ------- REDUCER --------
 const initialState = {
   projects: [
     {
       id: 1,
       name: 'Evotalks',
-      devices: 2,
-      members: 12,
+      devices: [],
+      members: [
+        { id: 1, email: 'user1@example.com' },
+        { id: 2, email: 'user2@example.com' },
+      ],
     },
     {
       id: 2,
       name: 'SIIT',
-      devices: 5,
-      members: 10,
+      devices: [],
+      members: [
+        { id: 4, email: 'user4@example.com' },
+        { id: 2, email: 'user2@example.com' },
+        { id: 7, email: 'user7@example.com' },
+      ],
     },
     {
       id: 3,
       name: 'Un doi',
-      devices: 1,
-      members: 5,
+      devices: [],
+      members: [
+        { id: 2, email: 'user2@example.com' },
+        { id: 3, email: 'user3@example.com' },
+      ],
     },
   ],
 };
@@ -83,8 +109,30 @@ export function projectsStore(state = initialState, { type, payload }) {
       project.id !== parseInt(payload.id, 10));
       return { ...state, projects };
     }
+    case ADD_MEMBER: {
+      const project = state.projects.find((proj) => proj.id === payload.project_id);
+      const members = project.members.concat(payload.user);
+      return { ...state, projects: attachMembersToProject(state.projects, project.id, members) };
+    }
+    case REMOVE_MEMBER: {
+      const project = state.projects.find((proj) => proj.id === payload.project_id);
+      const members = project.members.filter((member) =>
+      member.id !== parseInt(payload.member_id, 10));
+      return { ...state, projects: attachMembersToProject(state.projects, project.id, members) };
+    }
     default: {
       return state;
     }
   }
+}
+
+function attachMembersToProject(projects, projectId, members) {
+  return projects.map((project) => {
+    if (project.id === projectId) {
+      const newProject = project;
+      newProject.members = members;
+      return newProject;
+    }
+    return project;
+  });
 }

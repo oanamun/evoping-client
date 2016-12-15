@@ -1,18 +1,26 @@
 import React, { Component, PropTypes } from 'react';
+import { connect } from 'react-redux';
 import { ListGroupItem, Button, Collapse, Row, Col, Input } from 'reactstrap';
 import AddMemberContainer from 'modules/project/add-member/AddMemberContainer';
 import ProjectInfoTable from './ProjectInfoTable';
+import { editProject, deleteProject, removeMember, addMember } from '../stores/projectsStore';
 
 const propTypes = {
   project: PropTypes.object.isRequired,
-  onDelete: PropTypes.func.isRequired,
-  onEdit: PropTypes.func.isRequired,
+  devices: PropTypes.array.isRequired,
+  dispatchEditProject: PropTypes.func,
+  dispatchDeleteProject: PropTypes.func,
+  dispatchRemoveMember: PropTypes.func,
+  dispatchAddMember: PropTypes.func,
 };
 
 const defaultProps = {
   project: {},
-  onDelete: () => {},
-  onEdit: () => {},
+  devices: [],
+  dispatchEditProject: () => {},
+  dispatchDeleteProject: () => {},
+  dispatchRemoveMember: () => {},
+  dispatchAddMember: () => {},
 };
 
 class ProjectListItem extends Component {
@@ -22,32 +30,63 @@ class ProjectListItem extends Component {
       isOpen: false,
       editMode: false,
       project: this.props.project,
+      selectedMember: {},
     };
     this.toggle = this.toggle.bind(this);
-    this.edit = this.edit.bind(this);
-    this.saveChanges = this.saveChanges.bind(this);
+    this.openEdit = this.openEdit.bind(this);
+    this.editProject = this.editProject.bind(this);
+    this.deleteProject = this.deleteProject.bind(this);
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
+    this.onMemberSelect = this.onMemberSelect.bind(this);
+    this.addMember = this.addMember.bind(this);
+    this.removeMember = this.removeMember.bind(this);
   }
 
   onFieldUpdate(event) {
     this.setState({ project: { ...this.state.project, name: event.currentTarget.value } });
   }
 
-  edit() {
+  onMemberSelect(member) {
+    this.setState({ selectedMember: member });
+  }
+
+  addMember() {
+    if (this.state.selectedMember.email) {
+      this.props.dispatchAddMember({
+        project_id: this.props.project.id,
+        user: this.state.selectedMember,
+      });
+    }
+  }
+
+  openEdit() {
     this.setState({ editMode: true });
   }
 
-  saveChanges() {
+  deleteProject() {
+    this.props.dispatchDeleteProject({ id: this.props.project.id });
+  }
+
+  editProject() {
     this.setState({ editMode: false });
-    this.props.onEdit(this.state.project);
+    this.props.dispatchEditProject(this.state.project);
+  }
+
+  removeMember(event) {
+    this.props.dispatchRemoveMember({
+      project_id: this.props.project.id,
+      member_id: event.currentTarget.id,
+    });
   }
 
   toggle() {
-    this.setState({ isOpen: !this.state.isOpen });
+    if (!this.state.editMode) {
+      this.setState({ isOpen: !this.state.isOpen });
+    }
   }
 
   render() {
-    const { project, onDelete } = this.props;
+    const { project, devices } = this.props;
     return (
       <ListGroupItem>
         <Row>
@@ -69,22 +108,23 @@ class ProjectListItem extends Component {
               <Button
                 outline color="warning"
                 className="mr-2"
-                onClick={this.saveChanges}
+                onClick={this.editProject}
               >save
               </Button> :
-              <Button
-                outline color="warning"
-                className="mr-2"
-                onClick={this.edit}
-              >edit
-              </Button>
+              <div>
+                <Button
+                  outline color="warning"
+                  className="mr-2"
+                  onClick={this.openEdit}
+                >edit
+                </Button>
+                <Button
+                  outline color="danger"
+                  onClick={this.deleteProject}
+                >delete
+                </Button>
+              </div>
             }
-            <Button
-              outline color="danger"
-              id={project.id}
-              onClick={onDelete}
-            >delete
-            </Button>
           </Col>
         </Row>
         <Row>
@@ -92,12 +132,15 @@ class ProjectListItem extends Component {
             <Collapse isOpen={this.state.isOpen}>
               <Row>
                 <Col md="9">
-                  <ProjectInfoTable />
+                  <ProjectInfoTable
+                    members={project.members}
+                    devices={devices}
+                    onRemoveMember={this.removeMember}
+                  />
                 </Col>
                 <Col md="3">
-                  <AddMemberContainer />
-                  <Button outline color="primary">
-                    add
+                  <AddMemberContainer onSelect={this.onMemberSelect} />
+                  <Button outline color="primary" onClick={this.addMember}>add
                   </Button>
                 </Col>
               </Row>
@@ -109,7 +152,18 @@ class ProjectListItem extends Component {
   }
 }
 
+const mapStateToProps = (state, ownProps) => ({
+  devices: state.deviceStore.devices.filter((device) => device.project_id === ownProps.project.id),
+});
+
+const mapDispatchToProps = {
+  dispatchEditProject: editProject,
+  dispatchDeleteProject: deleteProject,
+  dispatchRemoveMember: removeMember,
+  dispatchAddMember: addMember,
+};
+
 ProjectListItem.propTypes = propTypes;
 ProjectListItem.defaultProps = defaultProps;
 
-export default ProjectListItem;
+export default connect(mapStateToProps, mapDispatchToProps)(ProjectListItem);

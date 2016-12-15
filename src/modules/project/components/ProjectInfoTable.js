@@ -1,36 +1,49 @@
-import React from 'react';
-import { Table } from 'reactstrap';
+import React, { PropTypes } from 'react';
+import { Link } from 'react-router';
+import { ListGroup, ListGroupItem, Row, Col } from 'reactstrap';
 
 const propTypes = {
+  members: PropTypes.array.isRequired,
+  devices: PropTypes.array.isRequired,
+  onRemoveMember: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
+  members: [],
+  devices: [],
+  onRemoveMember: () => {},
 };
 
-function ProjectInfoTable() {
+function ProjectInfoTable({ members, devices, onRemoveMember }) {
   return (
-    <Table inverse className="mt-1">
-      <thead>
-        <tr>
-          <th>devices</th>
-          <th>members</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <td>dev 2</td>
-          <td>
-            pers 2 <a href="/">&#10006;</a>
-          </td>
-        </tr>
-        <tr>
-          <td>dev 3</td>
-          <td>
-            pers 3 <a href="/">&#10006;</a>
-          </td>
-        </tr>
-      </tbody>
-    </Table>
+    <Row>
+      <Col md="6">
+        <ListGroup>
+          <ListGroupItem active action>devices</ListGroupItem>
+          {devices.map((device, i) =>
+            <ListGroupItem key={device.id}>
+              <Link to={`/device/${device.id}`}>{device.name}</Link>
+            </ListGroupItem>
+          )}
+        </ListGroup>
+      </Col>
+      <Col md="6">
+        <ListGroup>
+          <ListGroupItem active action>members</ListGroupItem>
+          {members.map((member, i) =>
+            <ListGroupItem key={member.id}>
+              {member.email}
+              <a
+                href="#"
+                id={member.id}
+                onClick={onRemoveMember}
+              > &#10005;
+              </a>
+            </ListGroupItem>
+          )}
+        </ListGroup>
+      </Col>
+    </Row>
   );
 }
 
