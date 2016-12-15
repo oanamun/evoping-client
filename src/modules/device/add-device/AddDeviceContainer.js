@@ -20,7 +20,7 @@ class AddDeviceContainer extends Component {
         name: '',
         description: '',
         isPublic: false,
-        currentProject: { label: 2, value: 'val2' },
+        currentProject: this.props.projects[0],
       },
     };
     this.handleSave = this.handleSave.bind(this);
@@ -53,7 +53,9 @@ class AddDeviceContainer extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  projects: state.projectsStore.projects,
+  projects: state.projectsStore.projects.map((project) => {
+    return { label: project.name, value: project.id };
+  }),
 });
 
 const mapDispatchToProps = {

@@ -6,17 +6,16 @@ const propTypes = {
   projects: PropTypes.array,
   handleSubmit: PropTypes.func.isRequired,
   onUpdateField: PropTypes.func.isRequired,
+  currentProject: PropTypes.object,
 };
 const defaultProps = {
   projects: [],
   handleSubmit: () => {},
   onUpdateField: () => {},
+  currentProject: null,
 };
 
-function AddDeviceForm({ handleSubmit, onUpdateField, projects }) {
-  const projectsList = projects.map((project) => {
-    return { label: project.name, value: project }
-  });
+function AddDeviceForm({ projects, handleSubmit, onUpdateField, currentProject }) {
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup >
@@ -37,17 +36,17 @@ function AddDeviceForm({ handleSubmit, onUpdateField, projects }) {
       <FormGroup>
         <Label for="selectProject">Select Project</Label>
         <Select
+          required
           id="selectProject"
           name="currentProject"
-          currentProject={projectsList[0]}
-          options={projectsList}
+          options={projects}
           onChange={(option) => {
             onUpdateField({ currentTarget: {
               name: 'currentProject',
               value: option },
             });
           }}
-          value={projectsList[0]}
+          value={currentProject}
           placeholder={'Select project'}
         />
       </FormGroup>
