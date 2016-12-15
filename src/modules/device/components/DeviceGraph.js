@@ -2,11 +2,11 @@ import React, { PropTypes } from 'react';
 import { Line } from 'react-chartjs-2';
 
 const propTypes = {
-  currentGraph: PropTypes.object.isRequired,
+  graph: PropTypes.object.isRequired,
 };
 
 export const defaultProps = {
-  currentGraph: {},
+  graph: {},
 };
 
 // const renderCheck = (checks) =>
@@ -16,12 +16,12 @@ export const defaultProps = {
 //     </li>
 //   ));
 
-function DeviceGraph({ currentGraph }) {
+function DeviceGraph({ graph }) {
   return (
     <div>
       <div>
         <Line
-          data={currentGraph}
+          data={graph}
           width={100}
           height={50}
           options={{
@@ -30,8 +30,7 @@ function DeviceGraph({ currentGraph }) {
         />
       </div>
     </div>
-  )
-    ;
+  );
 }
 
 DeviceGraph.propTypes = propTypes;

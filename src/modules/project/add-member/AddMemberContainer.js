@@ -1,44 +1,53 @@
-import React, { Component } from 'react';
+import React, { Component,PropTypes } from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
+
+const propTypes = {
+  onSelect: PropTypes.func,
+};
+
+const defaultProps = {
+  onSelect: () => {},
+};
 
 class AddMemberContainer extends Component { // eslint-disable-line
   constructor(props) {
     super(props);
     this.state = {
-      values: [],
+      user: {},
     };
     this.handleChange = this.handleChange.bind(this);
   }
 
-  handleChange(elms) {
-    this.setState({ values: elms });
+  handleChange(selection) {
+    this.setState({ user: selection });
+    this.props.onSelect(selection ? selection.value : {});
   }
 
   render() {
-    const isMulti = true;
-    const options = [
-      { value: 'one', label: 'One' },
-      { value: 'two', label: 'Two1' },
-      { value: 'three', label: 'Three' },
-      { value: 'four', label: 'Four' },
-      { value: 'five', label: 'Two4' },
-      { value: 'six', label: 'Two5' },
-      { value: 'seven', label: 'Seven' },
-      { value: 'eight', label: 'Eight' },
+    const users = [
+      { value: { id: 1, email: 'user1@example.com' }, label: 'user1' },
+      { value: { id: 2, email: 'user2@example.com' }, label: 'user2' },
+      { value: { id: 3, email: 'user3@example.com' }, label: 'user3' },
+      { value: { id: 4, email: 'user4@example.com' }, label: 'user4' },
+      { value: { id: 5, email: 'user5@example.com' }, label: 'user5' },
+      { value: { id: 6, email: 'user6@example.com' }, label: 'user6' },
+      { value: { id: 7, email: 'user7@example.com' }, label: 'user7' },
     ];
     return (
       <Select
         className="members-select"
         name="form-field-name"
-        multi={isMulti}
-        options={options}
+        options={users}
         onChange={this.handleChange}
-        value={this.state.values}
+        value={this.state.user}
         placeholder={'Select members'}
       />
     );
   }
 }
+
+AddMemberContainer.propTypes = propTypes;
+AddMemberContainer.defaultProps = propTypes;
 
 export default AddMemberContainer;

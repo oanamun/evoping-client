@@ -3,19 +3,20 @@ import { Button, Form, FormGroup, Label, Input } from 'reactstrap';
 import Select from 'react-select';
 
 const propTypes = {
+  projects: PropTypes.array,
   handleSubmit: PropTypes.func.isRequired,
   onUpdateField: PropTypes.func.isRequired,
-  projectsList: PropTypes.array,
-  currentProject: PropTypes.object,
 };
 const defaultProps = {
+  projects: [],
   handleSubmit: () => {},
   onUpdateField: () => {},
-  projectsList: [{ label: 1, value: 'val1' }, { label: 2, value: 'val2' }],
-  currentProject: { label: 2, value: 'val2' },
 };
 
-function AddDeviceForm({ handleSubmit, onUpdateField, currentProject, projectsList }) {
+function AddDeviceForm({ handleSubmit, onUpdateField, projects }) {
+  const projectsList = projects.map((project) => {
+    return { label: project.name, value: project }
+  });
   return (
     <Form onSubmit={handleSubmit}>
       <FormGroup >
@@ -38,7 +39,7 @@ function AddDeviceForm({ handleSubmit, onUpdateField, currentProject, projectsLi
         <Select
           id="selectProject"
           name="currentProject"
-          currentProject={currentProject}
+          currentProject={projectsList[0]}
           options={projectsList}
           onChange={(option) => {
             onUpdateField({ currentTarget: {
@@ -46,7 +47,7 @@ function AddDeviceForm({ handleSubmit, onUpdateField, currentProject, projectsLi
               value: option },
             });
           }}
-          value={currentProject}
+          value={projectsList[0]}
           placeholder={'Select project'}
         />
       </FormGroup>

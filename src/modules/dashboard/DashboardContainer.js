@@ -38,13 +38,15 @@ class DashboardContainer extends Component { // eslint-disable-line
   }
 }
 
+function getDevicesWithProject(devices, projects) {
+  return devices.map((device) => {
+    const deviceProject = projects.find((project) => project.id === device.project_id);
+    return { ...device, project: deviceProject.name };
+  });
+}
+
 const mapStateToProps = (state) => ({
-  devices: [
-    { id: 1, name: 'Evo live', project: 'Evotalks', status: 0 },
-    { id: 2, name: 'Evo staging', project: 'Evotalks', status: 1 },
-    { id: 3, name: 'SIIT live', project: 'SIIT', status: 1 },
-    { id: 4, name: 'Un doi', project: '12', status: 1 },
-  ],
+  devices: getDevicesWithProject(state.deviceStore.devices, state.projectsStore.projects),
 });
 
 DashboardContainer.propTypes = propTypes;

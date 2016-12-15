@@ -1,28 +1,35 @@
 import React, { PropTypes } from 'react';
+import { Card, CardLink, CardTitle, CardText, Row, Col } from 'reactstrap';
 
 const propTypes = {
-  currentDevice: PropTypes.object.isRequired,
+  device: PropTypes.object.isRequired,
 };
 
 export const defaultProps = {
-  currentDevice: {
-    name: 'Default Device name',
-  },
+  device: { name: '-', host: '-', description: '-' },
 };
 
-function DeviceDetails({ currentDevice }) {
+function DeviceDetails({ device }) {
   return (
-    <div>
-      <p>
-        Name : {currentDevice.name}
-      </p>
-      <p>
-        Description: {currentDevice.description}
-      </p>
-      <p>
-        Host: {currentDevice.host}
-      </p>
-    </div>
+    <Card block inverse className="device-card mb-3">
+      <Row>
+        <Col md="4">
+          <CardTitle color="primary">{device.name}</CardTitle>
+        </Col>
+        <Col md="4">
+          <CardText>
+            <small>description</small>
+          </CardText>
+          <CardText className="device-info">{device.description}</CardText>
+        </Col>
+        <Col md="4">
+          <CardText>
+            <small>host</small>
+          </CardText>
+          <CardLink className="device-info" href="#">{device.host}</CardLink>
+        </Col>
+      </Row>
+    </Card>
   );
 }
 

@@ -5,6 +5,7 @@ import LoginContainer from 'modules/login/LoginContainer';
 import DashboardContainer from 'modules/dashboard/DashboardContainer';
 import ProjectsContainer from 'modules/project/ProjectsContainer';
 import DeviceContainer from 'modules/device/DeviceContainer';
+import AddDeviceContainer from 'modules/device/add-device/AddDeviceContainer';
 
 const propTypes = {
   pathname: PropTypes.string,
@@ -32,8 +33,12 @@ class MainContainer extends Component { // eslint-disable-line
                 component={LoginContainer}
               />
               <Match
-                pattern={`${this.props.pathname}device/1`}
+                pattern={`${this.props.pathname}device/:id`}
                 component={DeviceContainer}
+              />
+              <Match
+                pattern={`${this.props.pathname}add-device`}
+                component={AddDeviceContainer}
               />
               <Miss render={() => (<Redirect to="/" />)} />
             </div>
