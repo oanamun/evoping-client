@@ -1,13 +1,38 @@
 import { URL_API } from './../../services/Api';
+import io from 'socket.io-client';
 
 export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'login/LOGIN_ERROR';
 export const LOGOUT = 'login/LOGOUT';
+export const SOCKET_CONNECT = 'socket/CONNECT';
 
 // --------- ACTION CREATORS ----------
 
+const socketAuthenticate = (dispatch, token) => {
+  const socket = io.connect(URL_API);
+  console.log('pana aici 2');
+  console.log(socket);
+  console.log(token);
+  socket.on('connect', () => {
+    console.log('pana11');
+    socket
+      .emit('authenticate', { token })
+      .on('authenticated', () => {
+        console.log('auth success');
+        const checkId = 1;
+        socket.emit('join', checkId);
+        socket.on('check', (data) => {
+          console.log(data);
+        });
+      })
+      .on('unauthorized', (msg) => {
+        console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
+      });
+  });
+};
+
 export function login(credentials) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     fetch(`${URL_API}/login`, {
       method: 'POST',
       headers: {
@@ -26,6 +51,8 @@ export function login(credentials) {
           type: LOGIN_SUCCESS,
           payload: user,
         });
+        const { token } = getState().loginStore;
+        socketAuthenticate(dispatch, token);
       })
       .catch(() => {
         dispatch({
@@ -61,6 +88,9 @@ export function loginStore(state = initialState, { type, payload }) {
         redirectToHome: true,
         error: false,
       };
+    }
+    case SOCKET_CONNECT: {
+      return { ...state };
     }
     case LOGIN_ERROR: {
       return { ...state, error: true };
