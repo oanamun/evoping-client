@@ -54,9 +54,8 @@ class ProjectsContainer extends Component {
     this.props.dispatchAddProject(this.state.newProject);
   }
 
-  editProject() {
-    console.log('edit');
-    this.props.dispatchEditProject(this.state.newProject);
+  editProject(project) {
+    this.props.dispatchEditProject(project);
   }
 
   deleteProject(event) {

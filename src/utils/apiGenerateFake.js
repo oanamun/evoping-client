@@ -2,7 +2,7 @@ import { RECEIVEDCHECK } from 'modules/device/stores/deviceStore';
 import store from 'store/store';
 
 export default function generateResponse() {
-  const timeStamp = 5000;
+  const timeStamp = 50000;
   const limitTime = 100;
   const nrChecks = 5;
 
