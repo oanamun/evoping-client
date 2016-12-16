@@ -9,7 +9,7 @@ export const colors = [
 
 function style(color) {
   return {
-    fill: false,
+    fill: true,
     lineTension: 0.1,
     backgroundColor: color,
     borderColor: color,

@@ -1,13 +1,52 @@
+import { RECEIVEDCHECK } from 'modules/device/stores/deviceStore';
+import io from 'socket.io-client';
+
 import { URL_API } from './../../services/Api';
 
 export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'login/LOGIN_ERROR';
 export const LOGOUT = 'login/LOGOUT';
+export const SOCKET_CONNECT = 'socket/CONNECT';
 
 // --------- ACTION CREATORS ----------
 
+export const socketAuthenticate = (dispatch, token) => {
+  const socket = io.connect(URL_API);
+  socket.on('connect', () => {
+    socket
+      .emit('authenticate', { token })
+      .on('authenticated', () => {
+        dispatch({
+          type: SOCKET_CONNECT,
+          payload: {
+            socket,
+          },
+        });
+        // end of comment
+        // const checkId = 1;
+        // socket.emit('join', checkId);
+        // socket.on('check', (data) => {
+        //   console.log(RECEIVEDCHECK);
+        //   const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+        //   const payload = {
+        //     label: myDate,
+        //     responseTime: data,
+        //   };
+        //   dispatch({
+        //     type: RECEIVEDCHECK,
+        //     payload,
+        //   });
+        // });
+        //  the end of the comment
+      })
+      .on('unauthorized', (msg) => {
+        console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
+      });
+  });
+};
+
 export function login(credentials) {
-  return (dispatch) => {
+  return (dispatch, getState) => {
     fetch(`${URL_API}/login`, {
       method: 'POST',
       headers: {
@@ -26,6 +65,8 @@ export function login(credentials) {
           type: LOGIN_SUCCESS,
           payload: user,
         });
+        const { token } = getState().loginStore;
+        socketAuthenticate(dispatch, token);
       })
       .catch(() => {
         dispatch({
@@ -47,6 +88,7 @@ const initialState = {
   token: getFromStorage('token') || '',
   redirectToHome: false,
   error: false,
+  // socket: null,
 };
 
 export function loginStore(state = initialState, { type, payload }) {
@@ -60,6 +102,12 @@ export function loginStore(state = initialState, { type, payload }) {
         token: payload.token,
         redirectToHome: true,
         error: false,
+      };
+    }
+    case SOCKET_CONNECT: {
+      return {
+        ...state,
+        socket: payload.socket,
       };
     }
     case LOGIN_ERROR: {
