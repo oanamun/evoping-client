@@ -19,24 +19,30 @@ export function addDevice({ name, description, isPublic, currentProject }) {
     name,
     description,
     public: isPublic,
-    projectId: currentProject.value,
+    project_id: currentProject.value,
   };
-  return (dispatch) => {
-    fetch(`${URL_API}/device`, {
+  return (dispatch, getState) => {
+    const authToken = getState().loginStore.loggedInUser.token;
+    const data = JSON.stringify(device);
+    fetch(`${URL_API}/api/v1/device`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
+        Authorization: `Bearer ${authToken}`,
       },
-      body: JSON.stringify(device),
+      body: data,
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
-          dispatch({
-            type: ADD_DEVICE_SUCCESS,
-            payload: response.data, //TODO update when api is available
-          });
+          return response.json();
         }
         throw new Error(response.statusText);
+      })
+      .then((createdDevice) => {
+        dispatch({
+          type: ADD_DEVICE_SUCCESS,
+          payload: createdDevice,
+        });
       })
       .catch(() => {
         dispatch({
@@ -79,6 +85,7 @@ export function disconnectChanel() {
 
 // ------- REDUCER --------
 const initialState = {
+  redirectToHome: false,
   devices: [
     {
       id: 1,
@@ -132,7 +139,7 @@ export function deviceStore(state = initialState, { type, payload }) {
     }
     case ADD_DEVICE_SUCCESS: {
       const devices = state.devices.concat(payload);
-      return { ...state, devices };
+      return { ...state, devices, redirectToHome: true };
     }
     case RECEIVEDCHECK: {
       // console.log(payload);

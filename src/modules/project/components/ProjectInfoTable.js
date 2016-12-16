@@ -34,7 +34,7 @@ function ProjectInfoTable({ members, devices, onRemoveMember }) {
             <ListGroupItem key={member.id}>
               {member.email}
               <a
-                href="#"
+                href="#/"
                 id={member.id}
                 onClick={onRemoveMember}
               > &#10005;
