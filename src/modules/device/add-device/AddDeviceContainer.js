@@ -1,15 +1,18 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import { addDevice } from './../stores/deviceStore';
 import AddDeviceForm from './components/AddDeviceForm';
 
 const propTypes = {
   projects: PropTypes.array,
   dispatchAddDevice: PropTypes.func,
+  redirectToHome: PropTypes.bool,
 };
 const defaultProps = {
   projects: [],
   dispatchAddDevice: () => {},
+  redirectToHome: false,
 };
 
 class AddDeviceContainer extends Component {
@@ -22,6 +25,7 @@ class AddDeviceContainer extends Component {
         isPublic: false,
         currentProject: this.props.projects[0],
       },
+      redirectToHome: false,
     };
     this.handleSave = this.handleSave.bind(this);
     this.updateField = this.updateField.bind(this);
@@ -41,6 +45,9 @@ class AddDeviceContainer extends Component {
     this.setState({ deviceInfo: device });
   }
   render() {
+    if (this.props.redirectToHome) {
+      return <Redirect to={'/'} />;
+    }
     return (
       <AddDeviceForm
         projects={this.props.projects}
@@ -53,9 +60,10 @@ class AddDeviceContainer extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  projects: state.projectsStore.projects.map((project) => {
-    return { label: project.name, value: project.id };
-  }),
+  projects: state.projectsStore.projects.map((project) =>
+  ({ label: project.name, value: project.id })),
+  redirectToHome: state.deviceStore.redirectToHome,
+
 });
 
 const mapDispatchToProps = {
