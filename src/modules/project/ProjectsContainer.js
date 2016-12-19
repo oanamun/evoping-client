@@ -22,12 +22,7 @@ class ProjectsContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newProject: {
-        id: 0,
-        name: '',
-        members: [],
-        status: 1,
-      },
+      newProject: { name: '' },
     };
     this.addProject = this.addProject.bind(this);
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
