@@ -1,3 +1,4 @@
+import { socketAuthenticate } from 'modules/login/loginStore';
 import graphStyle from '../checkStyle';
 import { URL_API } from './../../../services/Api';
 
@@ -51,14 +52,14 @@ export function addCheck({ name, description, isPublic, currentProject }) {
   };
 }
 
-export function loadGraph() {
+export function loadGraph(checkId) {
   return (dispatch, getState) => {
-    const checkId = getState().checkStore.currentGraph.checkId;
-    const { socket } = getState().loginStore;
-    if (socket) {
-      // here sould run but it has an exced limit call
+    const { token } = getState().loginStore;
+    dispatch(socketAuthenticate(token, () => {
+      const socket = getState().loginStore.socket;
       socket.emit('join', checkId);
       socket.on('check', (data) => {
+        console.log(RECEIVEDCHECK);
         const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
         const payload = {
           label: myDate,
@@ -69,14 +70,15 @@ export function loadGraph() {
           payload,
         });
       });
-    }
+    }));
   };
 }
 
 export function disconnectChanel() {
   return (dispatch, getState) => {
     // ASK MIHAI HOW TO STOP LISTENING FROM SOCKET.IO
-    // socketAuthenticate(dispatch, getState().loginStore.token);
+    const { socket } = getState().loginStore;
+    socket.removeAllListeners('check');
   };
 }
 
