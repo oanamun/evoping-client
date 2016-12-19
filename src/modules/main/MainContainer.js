@@ -33,7 +33,7 @@ class MainContainer extends Component { // eslint-disable-line
                 component={LoginContainer}
               />
               <Match
-                pattern={`${this.props.pathname}device/:id`}
+                pattern={`${this.props.pathname}check/:id`}
                 component={DeviceContainer}
               />
               <Match

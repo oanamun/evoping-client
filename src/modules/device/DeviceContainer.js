@@ -7,8 +7,9 @@ import { loadGraph, disconnectChanel } from './stores/deviceStore';
 const propTypes = {
   graph: PropTypes.object.isRequired,
   device: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   dispatchLoadGraph: PropTypes.func.isRequired,
-  disptachDisconnectChanel: PropTypes.func.isRequired,
+  dispatchDisconnectChanel: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -16,19 +17,20 @@ const defaultProps = {
   device: {},
   dispatchLoadGraph: () => {
   },
-  disptachDisconnectChanel: () => {
+  dispatchDisconnectChanel: () => {
   },
 };
 
 class DeviceContainer extends Component { // eslint-disable-line
-  constructor(props) {
-    super(props);
-    props.dispatchLoadGraph();
+
+  componentWillMount() {
+    console.log(`mount ${this.props.params.id}`);
+    this.props.dispatchLoadGraph(this.props.params.id);
   }
 
   componentWillUnmount() {
     console.log('unmount');
-    this.props.disptachDisconnectChanel();
+    this.props.dispatchDisconnectChanel();
   }
 
   render() {
@@ -56,7 +58,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = {
   dispatchLoadGraph: loadGraph,
-  disptachDisconnectChanel: disconnectChanel,
+  dispatchDisconnectChanel: disconnectChanel,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(DeviceContainer);

@@ -16,7 +16,7 @@ function DevicesTableRow({ index, device }) {
     <tr>
       <th scope="row">{index + 1}</th>
       <td>
-        <Link className="nav-link" to={`/device/${device.id}`}>{device.name}</Link>
+        <Link className="nav-link" to={`/check/${device.id}`}>{device.name}</Link>
       </td>
       <td>
         <Link className="nav-link" to="/projects">{device.project}</Link>
