@@ -1,7 +1,7 @@
 import { RECEIVEDCHECK } from 'modules/checks/stores/checkStore';
 import io from 'socket.io-client';
 
-import { BASE_URL, URL_API } from './../../services/Api';
+import { BASE_URL } from './../../services/Api';
 
 export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'login/LOGIN_ERROR';
@@ -12,9 +12,9 @@ export const SOCKET_CONNECT = 'socket/CONNECT';
 
 export const socketAuthenticate = (token, handler) =>
   (dispatch) => {
-    const socket = io.connect(URL_API);
-    console.log('Action 1:');
-    console.log(socket);
+    const socket = io.connect(BASE_URL);
+    // console.log('Action 1:');
+    // console.log(socket);
     socket.on('connect', () => {
       socket
         .emit('authenticate', { token })
@@ -28,7 +28,7 @@ export const socketAuthenticate = (token, handler) =>
           handler();
         })
         .on('unauthorized', (msg) => {
-          console.log(`unauthoaaarized: ${JSON.stringify(msg.data)}`);
+          console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
         });
     });
   };

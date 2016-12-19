@@ -54,15 +54,12 @@ export function addCheck({ name, description, isPublic, currentProject }) {
 
 export function loadGraph(checkId) {
   return (dispatch, getState) => {
-    // here sould run but it has an exced limit call
     const { token } = getState().loginStore;
-    console.log('missaaa');
     dispatch(socketAuthenticate(token, () => {
-      console.log('growingaa');
       const socket = getState().loginStore.socket;
-      console.log(socket);
       socket.emit('join', checkId);
       socket.on('check', (data) => {
+        console.log(RECEIVEDCHECK);
         const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
         const payload = {
           label: myDate,
@@ -74,22 +71,6 @@ export function loadGraph(checkId) {
         });
       });
     }));
-    //   console.log('miss');
-    //   const socket = getState().loginStore.socket;
-    //   console.log(socket);
-    //   socket.emit('join', checkId);
-    //   socket.on('check', (data) => {
-    //     const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
-    //     const payload = {
-    //       label: myDate,
-    //       responseTime: data,
-    //     };
-    //     dispatch({
-    //       type: RECEIVEDCHECK,
-    //       payload,
-    //     });
-    //   });
-    // }));
   };
 }
 
