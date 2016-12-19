@@ -1,33 +1,37 @@
 import React, { PropTypes } from 'react';
 import { Link } from 'react-router';
-import { ListGroup, ListGroupItem, Row, Col } from 'reactstrap';
+import { ListGroup, ListGroupItem, Row, Col, Tag, Button } from 'reactstrap';
 
 const propTypes = {
-  members: PropTypes.array.isRequired,
-  devices: PropTypes.array.isRequired,
+  members: PropTypes.array,
+  checks: PropTypes.array,
   onRemoveMember: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
   members: [],
-  devices: [],
+  checks: [],
   onRemoveMember: () => {},
 };
 
-function ProjectInfoTable({ members, devices, onRemoveMember }) {
+function ProjectInfoTable({ members, checks, onRemoveMember }) {
   return (
     <Row>
       <Col md="6">
         <ListGroup>
-          <ListGroupItem active action>devices</ListGroupItem>
-          {devices.map((device, i) =>
-            <ListGroupItem key={device.id}>
-              <Link to={`/device/${device.id}`}>{device.name}</Link>
+          <ListGroupItem active action>
+            checks
+            <Link className="float-xs-right text-info" to="add-check">Add check</Link>
+          </ListGroupItem>
+          {checks.map((check, i) =>
+            <ListGroupItem key={check.id}>
+              <Link to={`/check/${check.id}`}>{check.name}</Link>
+              <Tag pill className="float-xs-right" color="danger">down</Tag>
             </ListGroupItem>
           )}
         </ListGroup>
       </Col>
-      <Col md="6">
+      <Col md="6" hidden>
         <ListGroup>
           <ListGroupItem active action>members</ListGroupItem>
           {members.map((member, i) =>

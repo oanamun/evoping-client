@@ -1,10 +1,10 @@
 import { combineReducers } from 'redux';
 import { loginStore } from 'modules/login/loginStore';
 import { projectsStore } from 'modules/project/stores/projectsStore';
-import { deviceStore } from 'modules/device/stores/deviceStore';
+import { checkStore } from 'modules/checks/stores/checkStore';
 
 export default combineReducers({
   loginStore,
   projectsStore,
-  deviceStore,
+  checkStore,
 });

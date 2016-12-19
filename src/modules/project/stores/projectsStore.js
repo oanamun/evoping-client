@@ -58,30 +58,26 @@ const initialState = {
     {
       id: 1,
       name: 'Evotalks',
-      devices: [],
-      members: [
-        { id: 1, email: 'user1@example.com' },
-        { id: 2, email: 'user2@example.com' },
-      ],
+      checks: 1,
+      last_check: '19 Dec 2016 16:00',
+      response_time: '200',
+      status: 0,
     },
     {
       id: 2,
       name: 'SIIT',
-      devices: [],
-      members: [
-        { id: 4, email: 'user4@example.com' },
-        { id: 2, email: 'user2@example.com' },
-        { id: 7, email: 'user7@example.com' },
-      ],
+      checks: 2,
+      last_check: '19 Dec 2016 16:00',
+      response_time: '200',
+      status: 1,
     },
     {
       id: 3,
       name: 'Un doi',
-      devices: [],
-      members: [
-        { id: 2, email: 'user2@example.com' },
-        { id: 3, email: 'user3@example.com' },
-      ],
+      checks: 3,
+      last_check: '19 Dec 2016 16:00',
+      response_time: '200',
+      status: 0,
     },
   ],
 };

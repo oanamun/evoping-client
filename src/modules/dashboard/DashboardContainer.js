@@ -1,52 +1,35 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { Table } from 'reactstrap';
-import DevicesTableRow from './components/DevicesTableRow';
+import { CardColumns } from 'reactstrap';
+import ProjectCard from './components/ProjectCard';
 
 const propTypes = {
-  devices: PropTypes.array.isRequired,
+  projects: PropTypes.array.isRequired,
 };
 
 const defaultProps = {
-  devices: [],
+  projects: [],
 };
 
 class DashboardContainer extends Component { // eslint-disable-line
+
   render() {
-    const { devices } = this.props;
+    const { projects } = this.props;
     return (
-      <Table inverse responsive>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Device name</th>
-            <th>Project</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {devices.map((device, index) => (
-            <DevicesTableRow
-              key={index}
-              index={index}
-              device={device}
-            />
-          ))}
-        </tbody>
-      </Table>
+      <CardColumns>
+        {projects.map((project, index) => (
+          <ProjectCard
+            key={index}
+            project={project}
+          />
+        ))}
+      </CardColumns>
     );
   }
 }
 
-function getDevicesWithProject(devices, projects) {
-  return devices.map((device) => {
-    const deviceProject = projects.find((project) => project.id === device.project_id);
-    return { ...device, project: deviceProject.name };
-  });
-}
-
 const mapStateToProps = (state) => ({
-  devices: getDevicesWithProject(state.deviceStore.devices, state.projectsStore.projects),
+  projects: state.projectsStore.projects,
 });
 
 DashboardContainer.propTypes = propTypes;
