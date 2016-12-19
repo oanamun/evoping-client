@@ -1,7 +1,7 @@
 import { RECEIVEDCHECK } from 'modules/device/stores/deviceStore';
 import io from 'socket.io-client';
 
-import { URL_API } from './../../services/Api';
+import { BASE_URL, URL_API } from './../../services/Api';
 
 export const LOGIN_SUCCESS = 'login/LOGIN_SUCCESS';
 export const LOGIN_ERROR = 'login/LOGIN_ERROR';
@@ -47,7 +47,7 @@ export const socketAuthenticate = (dispatch, token) => {
 
 export function login(credentials) {
   return (dispatch, getState) => {
-    fetch(`${URL_API}/login`, {
+    fetch(`${BASE_URL}/login`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

@@ -1,4 +1,3 @@
-import { socketAuthenticate } from './../../login/loginStore';
 import graphStyle from '../checkStyle';
 import { URL_API } from './../../../services/Api';
 
