@@ -8,25 +8,27 @@ const propTypes = {
   graph: PropTypes.object.isRequired,
   check: PropTypes.object.isRequired,
   dispatchLoadGraph: PropTypes.func.isRequired,
-  disptachDisconnectChanel: PropTypes.func.isRequired,
+  params: PropTypes.object.isRequired,
+  dispatchDisconnectChanel: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
   graph: {},
   check: {},
   dispatchLoadGraph: () => {},
-  disptachDisconnectChanel: () => {},
+  dispatchDisconnectChanel: () => {},
 };
 
 class CheckContainer extends Component { // eslint-disable-line
-  constructor(props) {
-    super(props);
-    props.dispatchLoadGraph();
+
+  componentWillMount() {
+    console.log(`mount ${this.props.params.id}`);
+    this.props.dispatchLoadGraph(this.props.params.id);
   }
 
   componentWillUnmount() {
     console.log('unmount');
-    this.props.disptachDisconnectChanel();
+    this.props.dispatchDisconnectChanel();
   }
 
   render() {
@@ -54,7 +56,7 @@ const mapStateToProps = (state, ownProps) => ({
 
 const mapDispatchToProps = {
   dispatchLoadGraph: loadGraph,
-  disptachDisconnectChanel: disconnectChanel,
+  dispatchDisconnectChanel: disconnectChanel,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckContainer);

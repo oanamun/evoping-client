@@ -1,4 +1,4 @@
-import { RECEIVEDCHECK } from 'modules/device/stores/deviceStore';
+import { RECEIVEDCHECK } from 'modules/checks/stores/checkStore';
 import io from 'socket.io-client';
 
 import { BASE_URL, URL_API } from './../../services/Api';
@@ -10,40 +10,51 @@ export const SOCKET_CONNECT = 'socket/CONNECT';
 
 // --------- ACTION CREATORS ----------
 
-export const socketAuthenticate = (dispatch, token) => {
-  const socket = io.connect(URL_API);
-  socket.on('connect', () => {
-    socket
-      .emit('authenticate', { token })
-      .on('authenticated', () => {
-        dispatch({
-          type: SOCKET_CONNECT,
-          payload: {
-            socket,
-          },
+export const socketAuthenticate = (token, handler) =>
+  (dispatch) => {
+    const socket = io.connect(URL_API);
+    console.log('Action 1:');
+    console.log(socket);
+    socket.on('connect', () => {
+      socket
+        .emit('authenticate', { token })
+        .on('authenticated', () => {
+          dispatch({
+            type: SOCKET_CONNECT,
+            payload: {
+              socket,
+            },
+          });
+          handler();
+        })
+        .on('unauthorized', (msg) => {
+          console.log(`unauthoaaarized: ${JSON.stringify(msg.data)}`);
         });
-        // end of comment
-        // const checkId = 1;
-        // socket.emit('join', checkId);
-        // socket.on('check', (data) => {
-        //   console.log(RECEIVEDCHECK);
-        //   const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
-        //   const payload = {
-        //     label: myDate,
-        //     responseTime: data,
-        //   };
-        //   dispatch({
-        //     type: RECEIVEDCHECK,
-        //     payload,
-        //   });
-        // });
-        //  the end of the comment
-      })
-      .on('unauthorized', (msg) => {
-        console.log(`unauthorized: ${JSON.stringify(msg.data)}`);
-      });
-  });
-};
+    });
+  };
+
+// export const socketAuthenticate = (token, handler) =>
+// (dispatch) => {
+//   const socket = io.connect(URL_API);
+  // console.log('Action 1:');
+  // console.log(socket);
+//   socket.on('connect', () => {
+//     socket
+//       .emit('authenticate', { token })
+//       .on('authenticated', () => {
+//         dispatch({
+//           type: SOCKET_CONNECT,
+//           payload: {
+//             socket,
+//           },
+//         });
+//         handler();
+//       })
+//       .on('unauthorized', (msg) => {
+//         console.log(`unauthoaaarized: ${JSON.stringify(msg.data)}`);
+//       });
+//   });
+// };
 
 export function login(credentials) {
   return (dispatch, getState) => {
