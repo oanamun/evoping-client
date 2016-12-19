@@ -1,21 +1,21 @@
 import { socketAuthenticate } from './../../login/loginStore';
-import graphStyle from '../deviceStyle';
+import graphStyle from '../checkStyle';
 import { URL_API } from './../../../services/Api';
 
-export const RECEIVEDCHECK = 'device/RECEIVEDCHECK';
-export const GET_DEVICES = 'device/GET_DEVICES';
-export const ADD_DEVICE_SUCCESS = 'device/ADD_DEVICE_SUCCESS';
-export const ADD_DEVICE_ERROR = 'device/ADD_DEVICE_ERROR';
+export const RECEIVEDCHECK = 'check/RECEIVEDCHECK';
+export const GET_CHECKS = 'check/GET_CHECKS';
+export const ADD_CHECK_SUCCESS = 'check/ADD_CHECK_SUCCESS';
+export const ADD_CHECK_ERROR = 'check/ADD_CHECK_ERROR';
 
 // --------- ACTION CREATORS ----------
-export function getDevices() {
+export function getChecks() {
   return {
-    type: GET_DEVICES,
+    type: GET_CHECKS,
   };
 }
 
-export function addDevice({ name, description, isPublic, currentProject }) {
-  const device = {
+export function addCheck({ name, description, isPublic, currentProject }) {
+  const check = {
     name,
     description,
     public: isPublic,
@@ -23,8 +23,8 @@ export function addDevice({ name, description, isPublic, currentProject }) {
   };
   return (dispatch, getState) => {
     const authToken = getState().loginStore.loggedInUser.token;
-    const data = JSON.stringify(device);
-    fetch(`${URL_API}/api/v1/device`, {
+    const data = JSON.stringify(check);
+    fetch(`${URL_API}/api/v1/check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -38,15 +38,15 @@ export function addDevice({ name, description, isPublic, currentProject }) {
         }
         throw new Error(response.statusText);
       })
-      .then((createdDevice) => {
+      .then((createdCheck) => {
         dispatch({
-          type: ADD_DEVICE_SUCCESS,
-          payload: createdDevice,
+          type: ADD_CHECK_SUCCESS,
+          payload: createdCheck,
         });
       })
       .catch(() => {
         dispatch({
-          type: ADD_DEVICE_ERROR,
+          type: ADD_CHECK_ERROR,
         });
       });
   };
@@ -54,7 +54,7 @@ export function addDevice({ name, description, isPublic, currentProject }) {
 
 export function loadGraph() {
   return (dispatch, getState) => {
-    const checkId = getState().deviceStore.currentGraph.checkId;
+    const checkId = getState().checkStore.currentGraph.checkId;
     const { socket } = getState().loginStore;
     if (socket) {
       // here sould run but it has an exced limit call
@@ -84,13 +84,13 @@ export function disconnectChanel() {
 // ------- REDUCER --------
 const initialState = {
   redirectToHome: false,
-  devices: [
+  checks: [
     {
       id: 1,
       name: 'Evo live',
       description: 'This is a summary description',
       host: 'http://evotalks.evozon.com',
-      status: 1,
+      interval: 5,
       project_id: 1,
     },
     {
@@ -98,7 +98,7 @@ const initialState = {
       name: 'Evo staging',
       description: 'This is a summary description',
       host: 'http://staging-evotalks.evozon.com',
-      status: 0,
+      interval: 5,
       project_id: 1,
     },
     {
@@ -106,7 +106,7 @@ const initialState = {
       name: 'SIIT',
       description: 'This is a summary description',
       host: 'http://www.scolainformaladeit.com',
-      status: 1,
+      interval: 5,
       project_id: 2,
     },
     {
@@ -114,7 +114,7 @@ const initialState = {
       name: 'Un doi',
       description: 'This is a summary description',
       host: 'http://www.undoi.com',
-      status: 1,
+      interval: 5,
       project_id: 3,
     },
   ],
@@ -130,14 +130,14 @@ const initialState = {
   },
 };
 
-export function deviceStore(state = initialState, { type, payload }) {
+export function checkStore(state = initialState, { type, payload }) {
   switch (type) {
-    case GET_DEVICES: {
+    case GET_CHECKS: {
       return state;
     }
-    case ADD_DEVICE_SUCCESS: {
-      const devices = state.devices.concat(payload);
-      return { ...state, devices, redirectToHome: true };
+    case ADD_CHECK_SUCCESS: {
+      const checks = state.checks.concat(payload);
+      return { ...state, checks, redirectToHome: true };
     }
     case RECEIVEDCHECK: {
       const newLabels = state.currentGraph.labels;

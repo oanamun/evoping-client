@@ -37,7 +37,7 @@ class HeaderContainer extends Component {
             <Link className="nav-link" to="/projects">Projects</Link>
           </NavItem>
           <NavItem>
-            <Link className="nav-link" to="/add-device">Add device</Link>
+            <Link className="nav-link" to="/add-check">Add check</Link>
           </NavItem>
         </Nav>
         <Nav className="float-xs-right" navbar>

@@ -6,6 +6,7 @@ import AddProjectForm from 'modules/project/components/AddProjectForm';
 import { getProjects, addProject } from './stores/projectsStore';
 
 const propTypes = {
+  location: PropTypes.object,
   projects: PropTypes.array.isRequired,
   dispatchGetProjects: PropTypes.func,
   dispatchAddProject: PropTypes.func,
@@ -24,8 +25,8 @@ class ProjectsContainer extends Component {
       newProject: {
         id: 0,
         name: '',
-        members: 0,
-        devices: 0,
+        members: [],
+        status: 1,
       },
     };
     this.addProject = this.addProject.bind(this);
@@ -60,6 +61,8 @@ class ProjectsContainer extends Component {
           {this.props.projects.map((project, index) =>
             <ProjectListItem
               project={project}
+              selectedId={this.props.location.query ?
+                parseInt(this.props.location.query.id, 10) : 0}
               key={project.id}
             />
           )}

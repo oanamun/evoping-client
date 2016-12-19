@@ -1,21 +1,21 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
-import { addDevice } from './../stores/deviceStore';
-import AddDeviceForm from './components/AddDeviceForm';
+import { addCheck } from '../stores/checkStore';
+import AddCheckForm from './components/AddCheckForm';
 
 const propTypes = {
   projects: PropTypes.array,
-  dispatchAddDevice: PropTypes.func,
+  dispatchAddCheck: PropTypes.func,
   redirectToHome: PropTypes.bool,
 };
 const defaultProps = {
   projects: [],
-  dispatchAddDevice: () => {},
+  dispatchAddCheck: () => {},
   redirectToHome: false,
 };
 
-class AddDeviceContainer extends Component {
+class AddCheckContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -32,7 +32,7 @@ class AddDeviceContainer extends Component {
   }
   handleSave(evt) {
     evt.preventDefault();
-    this.props.dispatchAddDevice(this.state.deviceInfo);
+    this.props.dispatchAddCheck(this.state.deviceInfo);
   }
   updateField(evt) {
     const { name, value } = evt.currentTarget;
@@ -52,7 +52,7 @@ class AddDeviceContainer extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-6 mx-auto">
-            <AddDeviceForm
+            <AddCheckForm
               projects={this.props.projects}
               handleSubmit={this.handleSave}
               onUpdateField={this.updateField}
@@ -68,16 +68,16 @@ class AddDeviceContainer extends Component {
 const mapStateToProps = (state, ownProps) => ({
   projects: state.projectsStore.projects.map((project) =>
   ({ label: project.name, value: project.id })),
-  redirectToHome: state.deviceStore.redirectToHome,
+  redirectToHome: state.checkStore.redirectToHome,
 
 });
 
 const mapDispatchToProps = {
-  dispatchAddDevice: addDevice,
+  dispatchAddCheck: addCheck,
 };
 
-AddDeviceContainer.propTypes = propTypes;
-AddDeviceContainer.defaultProps = defaultProps;
+AddCheckContainer.propTypes = propTypes;
+AddCheckContainer.defaultProps = defaultProps;
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddDeviceContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(AddCheckContainer);
 

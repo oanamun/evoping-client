@@ -6,8 +6,9 @@ import ProjectInfoTable from './ProjectInfoTable';
 import { editProject, deleteProject, removeMember, addMember } from '../stores/projectsStore';
 
 const propTypes = {
+  selectedId: PropTypes.number,
   project: PropTypes.object.isRequired,
-  devices: PropTypes.array.isRequired,
+  checks: PropTypes.array,
   dispatchEditProject: PropTypes.func,
   dispatchDeleteProject: PropTypes.func,
   dispatchRemoveMember: PropTypes.func,
@@ -15,8 +16,9 @@ const propTypes = {
 };
 
 const defaultProps = {
+  selectedId: 0,
   project: {},
-  devices: [],
+  checks: [],
   dispatchEditProject: () => {},
   dispatchDeleteProject: () => {},
   dispatchRemoveMember: () => {},
@@ -27,7 +29,7 @@ class ProjectListItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false,
+      isOpen: this.props.selectedId === this.props.project.id,
       editMode: false,
       project: this.props.project,
       selectedMember: {},
@@ -86,13 +88,14 @@ class ProjectListItem extends Component {
   }
 
   render() {
-    const { project, devices } = this.props;
+    const { checks } = this.props;
     return (
       <ListGroupItem>
         <Row>
           <Col md="9" onClick={this.toggle}>
             { this.state.editMode ?
               <Input
+                className="mb-1"
                 type="text"
                 name="project"
                 value={this.state.project.name}
@@ -133,12 +136,11 @@ class ProjectListItem extends Component {
               <Row>
                 <Col md="9">
                   <ProjectInfoTable
-                    members={project.members}
-                    devices={devices}
+                    checks={checks}
                     onRemoveMember={this.removeMember}
                   />
                 </Col>
-                <Col md="3">
+                <Col md="3" hidden>
                   <AddMemberContainer onSelect={this.onMemberSelect} />
                   <Button outline color="primary" onClick={this.addMember}>add
                   </Button>
@@ -153,7 +155,7 @@ class ProjectListItem extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
-  devices: state.deviceStore.devices.filter((device) => device.project_id === ownProps.project.id),
+  checks: state.checkStore.checks.filter((check) => check.project_id === ownProps.project.id),
 });
 
 const mapDispatchToProps = {
