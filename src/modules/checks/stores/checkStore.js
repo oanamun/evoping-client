@@ -42,9 +42,12 @@ export function getChecks(projectId) {
   };
 }
 
-export function addCheck(check) {
+export function addCheck(checkParam) {
   return (dispatch, getState) => {
     const token = getState().loginStore.token;
+    const check = checkParam;
+    check.special_info = `{'method':'${checkParam.special_info.toUpperCase()}'}`;
+    console.log(check);
     fetch(`${URL_API}check`, {
       method: 'POST',
       headers: {
