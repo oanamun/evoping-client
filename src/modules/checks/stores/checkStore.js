@@ -1,8 +1,9 @@
-import { socketAuthenticate } from 'modules/login/loginStore';
+import { socketAuthenticate, SOCKET_CONNECT } from 'modules/login/loginStore';
 import graphStyle from '../checkStyle';
 import { URL_API } from './../../../services/Api';
 
 // --------- ACTIONS ----------
+export const INITGRAPH = 'check/INITGRAPH';
 export const RECEIVEDCHECK = 'check/RECEIVEDCHECK';
 export const GET_CHECKS_SUCCESS = 'check/GET_CHECKS_SUCCESS';
 export const GET_CHECKS_ERROR = 'check/GET_CHECKS_ERROR';
@@ -47,7 +48,6 @@ export function addCheck(checkParam) {
     const token = getState().loginStore.token;
     const check = checkParam;
     check.special_info = `{'method':'${checkParam.special_info.toUpperCase()}'}`;
-    console.log(check);
     fetch(`${URL_API}check`, {
       method: 'POST',
       headers: {
@@ -110,10 +110,16 @@ export function deleteCheck(payload) {
 export function loadGraph(checkId) {
   return (dispatch, getState) => {
     const { token } = getState().loginStore;
+    dispatch({
+      type: INITGRAPH,
+      payload: {
+        checkId,
+      },
+    });
     dispatch(socketAuthenticate(token, () => {
       const socket = getState().loginStore.socket;
-      socket.emit('join', checkId);
-      socket.on('check', (data) => {
+      socket.emit('join', 4);
+      socket.on(`${checkId}`, (data) => {
         console.log(RECEIVEDCHECK);
         const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
         const payload = {
@@ -133,7 +139,8 @@ export function disconnectChanel() {
   return (dispatch, getState) => {
     // ASK MIHAI HOW TO STOP LISTENING FROM SOCKET.IO
     const { socket } = getState().loginStore;
-    socket.removeAllListeners('check');
+    const { currentGraph } = getState().checkStore;
+    socket.removeAllListeners(`${currentGraph.checkId}`);
   };
 }
 
@@ -163,6 +170,22 @@ export function checkStore(state = initialState, { type, payload }) {
         return check;
       });
       return { ...state, checks, error: '' };
+    }
+    case INITGRAPH: {
+      return {
+        ...initialState,
+        currentGraph: {
+          ...initialState.currentGraph,
+          checkId: payload.checkId,
+          datasets: [{
+            label: `Check id: ${payload.checkId}`,
+            ...graphStyle(payload.checkId),
+            data: [],
+          }],
+        },
+        // currentGraph: { checkId: payload.checkId },
+      };
+      // return initialState;
     }
     case GET_CHECKS_ERROR: {
       const error = 'There was a problem when getting the checks';
@@ -204,7 +227,6 @@ export function checkStore(state = initialState, { type, payload }) {
             payload.label,
           ],
           datasets: [{
-            label: 'Check 1',
             data: [
               ...newDatasets,
               payload.responseTime,
