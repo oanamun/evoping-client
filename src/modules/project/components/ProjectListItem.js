@@ -4,11 +4,13 @@ import { ListGroupItem, Button, Collapse, Row, Col, Input } from 'reactstrap';
 import AddMemberContainer from 'modules/project/add-member/AddMemberContainer';
 import ProjectInfoTable from './ProjectInfoTable';
 import { editProject, deleteProject, removeMember, addMember } from '../stores/projectsStore';
+import { getChecks } from '../../checks/stores/checkStore';
 
 const propTypes = {
   selectedId: PropTypes.number,
   project: PropTypes.object.isRequired,
   checks: PropTypes.array,
+  dispatchGetChecks: PropTypes.func,
   dispatchEditProject: PropTypes.func,
   dispatchDeleteProject: PropTypes.func,
   dispatchRemoveMember: PropTypes.func,
@@ -19,6 +21,7 @@ const defaultProps = {
   selectedId: 0,
   project: {},
   checks: [],
+  dispatchGetChecks: () => {},
   dispatchEditProject: () => {},
   dispatchDeleteProject: () => {},
   dispatchRemoveMember: () => {},
@@ -42,6 +45,10 @@ class ProjectListItem extends Component {
     this.onMemberSelect = this.onMemberSelect.bind(this);
     this.addMember = this.addMember.bind(this);
     this.removeMember = this.removeMember.bind(this);
+  }
+
+  componentWillMount() {
+    this.props.dispatchGetChecks(this.props.project.id);
   }
 
   onFieldUpdate(event) {
@@ -159,6 +166,7 @@ const mapStateToProps = (state, ownProps) => ({
 });
 
 const mapDispatchToProps = {
+  dispatchGetChecks: getChecks,
   dispatchEditProject: editProject,
   dispatchDeleteProject: deleteProject,
   dispatchRemoveMember: removeMember,

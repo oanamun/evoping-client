@@ -43,7 +43,7 @@ class HeaderContainer extends Component {
         <Nav className="float-xs-right" navbar>
           {this.props.user.email ?
             <span>
-              <NavItem>{this.props.user.email}</NavItem>
+              <NavItem className="username">{this.props.user.email}</NavItem>
               <NavItem>
                 <Button onClick={this.logout} outline color="primary">
                   logout

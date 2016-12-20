@@ -1,25 +1,35 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import CheckDetails from './components/CheckDetails';
 import CheckGraph from './components/CheckGraph';
-import { loadGraph, disconnectChanel } from './stores/checkStore';
+import { loadGraph, disconnectChanel, deleteCheck } from './stores/checkStore';
 
 const propTypes = {
   graph: PropTypes.object.isRequired,
   check: PropTypes.object.isRequired,
+  error: PropTypes.string,
   dispatchLoadGraph: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired,
   dispatchDisconnectChanel: PropTypes.func.isRequired,
+  dispatchDeleteCheck: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
   graph: {},
   check: {},
+  error: '',
   dispatchLoadGraph: () => {},
   dispatchDisconnectChanel: () => {},
+  dispatchDeleteCheck: () => {},
 };
 
-class CheckContainer extends Component { // eslint-disable-line
+class CheckContainer extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { redirect: false };
+    this.onDelete = this.onDelete.bind(this);
+  }
 
   componentWillMount() {
     console.log(`mount ${this.props.params.id}`);
@@ -31,11 +41,19 @@ class CheckContainer extends Component { // eslint-disable-line
     this.props.dispatchDisconnectChanel();
   }
 
+  onDelete(event) {
+    this.props.dispatchDeleteCheck({ id: event.currentTarget.id });
+    this.setState({ redirect: true });
+  }
+
   render() {
     const { graph, check } = this.props;
+    if (this.state.redirect) {
+      return <Redirect to={'/projects'} />;
+    }
     return (
       <div>
-        <CheckDetails check={check} />
+        <CheckDetails check={check} onDelete={this.onDelete} />
         <CheckGraph graph={graph} />
       </div>
     );
@@ -51,12 +69,14 @@ function findById(checks, id) {
 
 const mapStateToProps = (state, ownProps) => ({
   check: findById(state.checkStore.checks, ownProps.params.id),
+  error: state.checkStore.error,
   graph: state.checkStore.currentGraph,
 });
 
 const mapDispatchToProps = {
   dispatchLoadGraph: loadGraph,
   dispatchDisconnectChanel: disconnectChanel,
+  dispatchDeleteCheck: deleteCheck,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckContainer);

@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
-import { ListGroup } from 'reactstrap';
+import { ListGroup, Alert } from 'reactstrap';
 import ProjectListItem from 'modules/project/components/ProjectListItem';
 import AddProjectForm from 'modules/project/components/AddProjectForm';
 import { getProjects, addProject } from './stores/projectsStore';
@@ -8,12 +8,14 @@ import { getProjects, addProject } from './stores/projectsStore';
 const propTypes = {
   location: PropTypes.object,
   projects: PropTypes.array.isRequired,
+  error: PropTypes.string.isRequired,
   dispatchGetProjects: PropTypes.func,
   dispatchAddProject: PropTypes.func,
 };
 
 const defaultProps = {
   projects: [],
+  error: '',
   dispatchGetProjects: () => {},
   dispatchAddProject: () => {},
 };
@@ -23,6 +25,7 @@ class ProjectsContainer extends Component {
     super(props);
     this.state = {
       newProject: { name: '' },
+      error: this.props.error,
     };
     this.addProject = this.addProject.bind(this);
     this.onFieldUpdate = this.onFieldUpdate.bind(this);
@@ -46,12 +49,21 @@ class ProjectsContainer extends Component {
   }
 
   render() {
+    const error = this.props.error;
     return (
       <div>
         <AddProjectForm
           onCreate={this.addProject}
           onFieldUpdate={this.onFieldUpdate}
         />
+
+        <Alert
+          color="danger"
+          isOpen={error.length !== 0}
+        >
+          {error}
+        </Alert>
+
         <ListGroup>
           {this.props.projects.map((project, index) =>
             <ProjectListItem
@@ -69,6 +81,7 @@ class ProjectsContainer extends Component {
 
 const mapStateToProps = (state) => ({
   projects: state.projectsStore.projects,
+  error: state.projectsStore.error,
 });
 
 const mapDispatchToProps = {
