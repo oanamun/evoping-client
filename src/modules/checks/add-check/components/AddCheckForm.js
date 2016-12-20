@@ -47,6 +47,20 @@ function AddCheckForm({ projects, handleSubmit, onUpdateField, selectedProject }
         />
       </FormGroup>
       <FormGroup>
+        <Label for="checkType">Type</Label>
+        <Input
+          onChange={onUpdateField} type="text" name="type" id="checkName"
+          required placeholder="web"
+        />
+      </FormGroup>
+      <FormGroup>
+        <Label for="checkMethodType">Method Type</Label>
+        <Input
+          onChange={onUpdateField} type="text" name="special_info" id="checkMethodType"
+          required placeholder="GET"
+        />
+      </FormGroup>
+      <FormGroup>
         <Label for="selectProject">Select Project</Label>
         <Select
           required
