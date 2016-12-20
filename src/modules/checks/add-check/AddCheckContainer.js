@@ -37,6 +37,7 @@ class AddCheckContainer extends Component {
     const check = this.state.newCheck;
     check.project_id = this.state.selectedProject.value;
     this.props.dispatchAddCheck(check);
+    this.setState({ redirect: true });
   }
 
   updateField(event) {
@@ -51,6 +52,9 @@ class AddCheckContainer extends Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to={`/projects?id=${this.state.selectedProject.value}`} />;
+    }
     return (
       <div className="container">
         <div className="row">

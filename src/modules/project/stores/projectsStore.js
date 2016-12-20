@@ -124,6 +124,7 @@ export function deleteProject(payload) {
       .then(() => {
         dispatch({
           type: DELETE_PROJECT_SUCCESS,
+          payload,
         });
       })
       .catch(() => {
@@ -150,49 +151,26 @@ export function removeMember(payload) {
 
 // ------- REDUCER --------
 const initialState = {
-  mockProjects: [
-    {
-      id: 1,
-      name: 'Evotalks',
-      checks: 1,
-      last_check: '19 Dec 2016 16:00',
-      response_time: '200',
-      status: 0,
-    },
-    {
-      id: 2,
-      name: 'SIIT',
-      checks: 2,
-      last_check: '19 Dec 2016 16:00',
-      response_time: '200',
-      status: 1,
-    },
-    {
-      id: 3,
-      name: 'Un doi',
-      checks: 3,
-      last_check: '19 Dec 2016 16:00',
-      response_time: '200',
-      status: 0,
-    },
-  ],
   projects: [],
+  error: '',
 };
 
 export function projectsStore(state = initialState, { type, payload }) {
   switch (type) {
     case GET_PROJECTS_SUCCESS: {
-      return { ...state, projects: payload };
+      return { ...state, projects: payload.Project, error: '' };
     }
     case GET_PROJECTS_ERROR: {
-      return state;
+      const error = 'There was a problem when getting the projects';
+      return { ...state, error };
     }
     case ADD_PROJECT_SUCCESS: {
       const projects = state.projects.concat(payload);
-      return { ...state, projects };
+      return { ...state, projects, error: '' };
     }
     case ADD_PROJECT_ERROR: {
-      return state;
+      const error = 'There was a problem when adding the project';
+      return { ...state, error };
     }
     case EDIT_PROJECT_SUCCESS: {
       const projects = state.projects.map((project) => {
@@ -201,18 +179,20 @@ export function projectsStore(state = initialState, { type, payload }) {
         }
         return project;
       });
-      return { ...state, projects };
+      return { ...state, projects, error: '' };
     }
     case EDIT_PROJECT_ERROR: {
-      return state;
+      const error = 'There was a problem when saving the changes';
+      return { ...state, error };
     }
     case DELETE_PROJECT_SUCCESS: {
       const projects = state.projects.filter((project) =>
       project.id !== parseInt(payload.id, 10));
-      return { ...state, projects };
+      return { ...state, projects, error: '' };
     }
     case DELETE_PROJECT_ERROR: {
-      return state;
+      const error = 'There was a problem when deleting the project';
+      return { ...state, error };
     }
     case ADD_MEMBER: {
       const project = state.projects.find((proj) => proj.id === payload.project_id);

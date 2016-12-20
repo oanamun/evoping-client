@@ -2,15 +2,43 @@ import { socketAuthenticate } from 'modules/login/loginStore';
 import graphStyle from '../checkStyle';
 import { URL_API } from './../../../services/Api';
 
+// --------- ACTIONS ----------
 export const RECEIVEDCHECK = 'check/RECEIVEDCHECK';
-export const GET_CHECKS = 'check/GET_CHECKS';
+export const GET_CHECKS_SUCCESS = 'check/GET_CHECKS_SUCCESS';
+export const GET_CHECKS_ERROR = 'check/GET_CHECKS_ERROR';
 export const ADD_CHECK_SUCCESS = 'check/ADD_CHECK_SUCCESS';
 export const ADD_CHECK_ERROR = 'check/ADD_CHECK_ERROR';
+export const DELETE_CHECK_SUCCESS = 'check/DELETE_CHECK_SUCCESS';
+export const DELETE_CHECK_ERROR = 'check/DELETE_CHECK_ERROR';
 
 // --------- ACTION CREATORS ----------
-export function getChecks() {
-  return {
-    type: GET_CHECKS,
+export function getChecks(projectId) {
+  return (dispatch, getState) => {
+    const token = getState().loginStore.token;
+    fetch(`${URL_API}project/${projectId}/check`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          return response.json();
+        }
+        throw new Error(response.statusText);
+      })
+      .then((checks) => {
+        dispatch({
+          type: GET_CHECKS_SUCCESS,
+          payload: checks,
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: GET_CHECKS_ERROR,
+        });
+      });
   };
 }
 
@@ -40,6 +68,37 @@ export function addCheck(check) {
       .catch(() => {
         dispatch({
           type: ADD_CHECK_ERROR,
+        });
+      });
+  };
+}
+
+export function deleteCheck(payload) {
+  return (dispatch, getState) => {
+    const token = getState().loginStore.token;
+    fetch(`${URL_API}check/${payload.id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          return response.json();
+        }
+        throw new Error(response.statusText);
+      })
+      .then(() => {
+        dispatch(disconnectChanel());
+        dispatch({
+          type: DELETE_CHECK_SUCCESS,
+          payload,
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: DELETE_CHECK_ERROR,
         });
       });
   };
@@ -77,39 +136,8 @@ export function disconnectChanel() {
 
 // ------- REDUCER --------
 const initialState = {
-  redirectToHome: false,
-  checks: [
-    {
-      id: 1,
-      name: 'Evo live',
-      host: 'http://evotalks.evozon.com',
-      check_interval: 5,
-      project_id: 1,
-    },
-    {
-      id: 2,
-      name: 'Evo staging',
-      host: 'http://staging-evotalks.evozon.com',
-      interval: 5,
-      project_id: 1,
-    },
-    {
-      id: 3,
-      name: 'SIIT',
-      description: 'This is a summary description',
-      host: 'http://www.scolainformaladeit.com',
-      interval: 5,
-      project_id: 2,
-    },
-    {
-      id: 4,
-      name: 'Un doi',
-      description: 'This is a summary description',
-      host: 'http://www.undoi.com',
-      interval: 5,
-      project_id: 3,
-    },
-  ],
+  checks: [],
+  error: '',
   currentGraph: {
     checkId: 1,
     maxTime: 16,
@@ -124,12 +152,35 @@ const initialState = {
 
 export function checkStore(state = initialState, { type, payload }) {
   switch (type) {
-    case GET_CHECKS: {
-      return state;
+    case GET_CHECKS_SUCCESS: {
+      const checks = state.checks;
+      payload.map((check) => {
+        const duplicate = state.checks.find((c) => c.id === check.id);
+        if (!duplicate) checks.push(check);
+        return check;
+      });
+      return { ...state, checks, error: '' };
+    }
+    case GET_CHECKS_ERROR: {
+      const error = 'There was a problem when getting the checks';
+      return { ...state, error };
     }
     case ADD_CHECK_SUCCESS: {
       const checks = state.checks.concat(payload);
-      return { ...state, checks, redirectToHome: true };
+      return { ...state, checks, error: '' };
+    }
+    case ADD_CHECK_ERROR: {
+      const error = 'There was a problem when adding the check';
+      return { ...state, error };
+    }
+    case DELETE_CHECK_SUCCESS: {
+      const checks = state.checks.filter((check) =>
+      check.id !== parseInt(payload.id, 10));
+      return { ...state, checks, error: '' };
+    }
+    case DELETE_CHECK_ERROR: {
+      const error = 'There was a problem when deleting the check';
+      return { ...state, error };
     }
     case RECEIVEDCHECK: {
       const newLabels = state.currentGraph.labels;
