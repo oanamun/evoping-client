@@ -14,23 +14,16 @@ export function getChecks() {
   };
 }
 
-export function addCheck({ name, description, isPublic, currentProject }) {
-  const check = {
-    name,
-    description,
-    public: isPublic,
-    project_id: currentProject.value,
-  };
+export function addCheck(check) {
   return (dispatch, getState) => {
-    const authToken = getState().loginStore.loggedInUser.token;
-    const data = JSON.stringify(check);
-    fetch(`${URL_API}/api/v1/check`, {
+    const token = getState().loginStore.token;
+    fetch(`${URL_API}check`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${authToken}`,
+        Authorization: `Bearer ${token}`,
       },
-      body: data,
+      body: JSON.stringify(check),
     })
       .then((response) => {
         if (response.status >= 200 && response.status < 300) {
@@ -38,10 +31,10 @@ export function addCheck({ name, description, isPublic, currentProject }) {
         }
         throw new Error(response.statusText);
       })
-      .then((createdCheck) => {
+      .then((newCheck) => {
         dispatch({
           type: ADD_CHECK_SUCCESS,
-          payload: createdCheck,
+          payload: newCheck,
         });
       })
       .catch(() => {
@@ -89,15 +82,13 @@ const initialState = {
     {
       id: 1,
       name: 'Evo live',
-      description: 'This is a summary description',
       host: 'http://evotalks.evozon.com',
-      interval: 5,
+      check_interval: 5,
       project_id: 1,
     },
     {
       id: 2,
       name: 'Evo staging',
-      description: 'This is a summary description',
       host: 'http://staging-evotalks.evozon.com',
       interval: 5,
       project_id: 1,

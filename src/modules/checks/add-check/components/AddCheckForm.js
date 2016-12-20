@@ -6,30 +6,44 @@ const propTypes = {
   projects: PropTypes.array,
   handleSubmit: PropTypes.func.isRequired,
   onUpdateField: PropTypes.func.isRequired,
-  currentProject: PropTypes.object,
+  selectedProject: PropTypes.object,
 };
 const defaultProps = {
   projects: [],
   handleSubmit: () => {},
   onUpdateField: () => {},
-  currentProject: null,
+  selectedProject: null,
 };
 
-function AddCheckForm({ projects, handleSubmit, onUpdateField, currentProject }) {
+function AddCheckForm({ projects, handleSubmit, onUpdateField, selectedProject }) {
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form>
       <FormGroup >
         <Label for="checkName">Check name</Label>
         <Input
           onChange={onUpdateField} type="text" name="name" id="checkName"
-          required placeholder="enter check name"
+          required placeholder="staging check"
+        />
+      </FormGroup>
+      <FormGroup >
+        <Label for="checkHost">Host</Label>
+        <Input
+          onChange={onUpdateField} type="text" name="host" id="checkHost"
+          required placeholder="http://example.com/page"
+        />
+      </FormGroup>
+      <FormGroup >
+        <Label for="checkResponse">Maximum response time in seconds</Label>
+        <Input
+          onChange={onUpdateField} type="text" name="max_response_time" id="checkResponse"
+          required placeholder="1"
         />
       </FormGroup>
       <FormGroup>
         <Label for="checkInterval">Check interval in seconds</Label>
         <Input
-          onChange={onUpdateField} type="text" name="interval" id="checkInterval"
-          placeholder="enter check interval"
+          onChange={onUpdateField} type="text" name="check_interval" id="checkInterval"
+          placeholder="5"
         />
       </FormGroup>
       <FormGroup>
@@ -40,16 +54,13 @@ function AddCheckForm({ projects, handleSubmit, onUpdateField, currentProject })
           name="currentProject"
           options={projects}
           onChange={(option) => {
-            onUpdateField({ currentTarget: {
-              name: 'currentProject',
-              value: option },
-            });
+            onUpdateField({ currentTarget: { name: 'selectedProject', value: option } });
           }}
-          value={currentProject}
           placeholder={'Select project'}
+          value={selectedProject}
         />
       </FormGroup>
-      <Button outline color="primary">Add check</Button>
+      <Button type="button" outline color="primary" onClick={handleSubmit}>Add check</Button>
     </Form>
   );
 }

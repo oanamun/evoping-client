@@ -1,6 +1,6 @@
 export const colors = [
-  '#66b92e',
   '#d65b4a',
+  '#66b92e',
   '#da932c',
   '#2499f2',
   '#9c6af2',
@@ -9,7 +9,7 @@ export const colors = [
 
 function style(color) {
   return {
-    fill: true,
+    fill: false,
     lineTension: 0.1,
     backgroundColor: color,
     borderColor: color,

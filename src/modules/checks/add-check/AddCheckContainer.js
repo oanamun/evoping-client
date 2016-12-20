@@ -2,61 +2,64 @@ import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { addCheck } from '../stores/checkStore';
+import { getProjects } from '../../project/stores/projectsStore';
 import AddCheckForm from './components/AddCheckForm';
 
 const propTypes = {
   projects: PropTypes.array,
   dispatchAddCheck: PropTypes.func,
-  redirectToHome: PropTypes.bool,
+  dispatchGetProjects: PropTypes.func,
 };
+
 const defaultProps = {
   projects: [],
   dispatchAddCheck: () => {},
-  redirectToHome: false,
+  dispatchGetProjects: () => {},
 };
 
 class AddCheckContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      deviceInfo: {
-        name: '',
-        description: '',
-        isPublic: false,
-        currentProject: this.props.projects[0],
-      },
+      newCheck: {},
+      selectedProject: null,
       redirectToHome: false,
     };
-    this.handleSave = this.handleSave.bind(this);
+    this.saveCheck = this.saveCheck.bind(this);
     this.updateField = this.updateField.bind(this);
   }
-  handleSave(evt) {
-    evt.preventDefault();
-    this.props.dispatchAddCheck(this.state.deviceInfo);
+
+  componentWillMount() {
+    this.props.dispatchGetProjects();
   }
-  updateField(evt) {
-    const { name, value } = evt.currentTarget;
-    const device = this.state.deviceInfo;
-    if (name === 'selectPublic') {
-      device.isPublic = value === 'Yes' ? 1 : 0;
+
+  saveCheck() {
+    const check = this.state.newCheck;
+    check.project_id = this.state.selectedProject.value;
+    this.props.dispatchAddCheck(check);
+  }
+
+  updateField(event) {
+    const { name, value } = event.currentTarget;
+    if (name === 'selectedProject') {
+      this.setState({ selectedProject: value });
     } else {
-      device[name] = value;
+      const check = this.state.newCheck;
+      check[name] = value;
+      this.setState({ newCheck: check });
     }
-    this.setState({ deviceInfo: device });
   }
+
   render() {
-    if (this.props.redirectToHome) {
-      return <Redirect to={'/'} />;
-    }
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-6 mx-auto">
             <AddCheckForm
               projects={this.props.projects}
-              handleSubmit={this.handleSave}
+              handleSubmit={this.saveCheck}
               onUpdateField={this.updateField}
-              currentProject={this.state.deviceInfo.currentProject}
+              selectedProject={this.state.selectedProject}
             />
           </div>
         </div>
@@ -68,11 +71,10 @@ class AddCheckContainer extends Component {
 const mapStateToProps = (state, ownProps) => ({
   projects: state.projectsStore.projects.map((project) =>
   ({ label: project.name, value: project.id })),
-  redirectToHome: state.checkStore.redirectToHome,
-
 });
 
 const mapDispatchToProps = {
+  dispatchGetProjects: getProjects,
   dispatchAddCheck: addCheck,
 };
 
