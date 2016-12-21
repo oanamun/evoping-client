@@ -1,11 +1,13 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import { ListGroup, Alert } from 'reactstrap';
 import ProjectListItem from 'modules/project/components/ProjectListItem';
 import AddProjectForm from 'modules/project/components/AddProjectForm';
 import { getProjects, addProject } from './stores/projectsStore';
 
 const propTypes = {
+  loggedInUser: PropTypes.object.isRequired,
   location: PropTypes.object,
   projects: PropTypes.array.isRequired,
   error: PropTypes.string.isRequired,
@@ -14,6 +16,7 @@ const propTypes = {
 };
 
 const defaultProps = {
+  loggedInUser: {},
   projects: [],
   error: '',
   dispatchGetProjects: () => {},
@@ -32,7 +35,9 @@ class ProjectsContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.dispatchGetProjects();
+    if (this.props.loggedInUser.email) {
+      this.props.dispatchGetProjects();
+    }
   }
 
   onFieldUpdate(event) {
@@ -49,7 +54,10 @@ class ProjectsContainer extends Component {
   }
 
   render() {
-    const error = this.props.error;
+    const { loggedInUser, error } = this.props;
+    if (!loggedInUser.email) {
+      return <Redirect to={'/login'} />;
+    }
     return (
       <div>
         <AddProjectForm
@@ -80,6 +88,7 @@ class ProjectsContainer extends Component {
 }
 
 const mapStateToProps = (state) => ({
+  loggedInUser: state.loginStore.loggedInUser,
   projects: state.projectsStore.projects,
   error: state.projectsStore.error,
 });

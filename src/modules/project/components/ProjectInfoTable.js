@@ -21,8 +21,13 @@ function ProjectInfoTable({ members, checks, onRemoveMember }) {
         <ListGroup>
           <ListGroupItem active action>
             checks
-            <Link className="float-xs-right text-info" to="add-check">Add check</Link>
           </ListGroupItem>
+          {checks.length < 1 ?
+            <ListGroupItem>
+              This project has no checks. <Link to="add-check">Add check!</Link>
+            </ListGroupItem> : null
+          }
+
           {checks.map((check, i) =>
             <ListGroupItem key={check.id}>
               <Link to={`/check/${check.id}`}>{check.name}</Link>

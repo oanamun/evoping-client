@@ -1,18 +1,25 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import { Alert } from 'reactstrap';
 import { addCheck } from '../stores/checkStore';
 import { getProjects } from '../../project/stores/projectsStore';
 import AddCheckForm from './components/AddCheckForm';
 
 const propTypes = {
+  loggedInUser: PropTypes.object.isRequired,
   projects: PropTypes.array,
+  redirect: PropTypes.bool,
+  error: PropTypes.string,
   dispatchAddCheck: PropTypes.func,
   dispatchGetProjects: PropTypes.func,
 };
 
 const defaultProps = {
+  loggedInUser: {},
   projects: [],
+  redirect: [],
+  error: [],
   dispatchAddCheck: () => {},
   dispatchGetProjects: () => {},
 };
@@ -30,14 +37,15 @@ class AddCheckContainer extends Component {
   }
 
   componentWillMount() {
-    this.props.dispatchGetProjects();
+    if (this.props.loggedInUser.email) {
+      this.props.dispatchGetProjects();
+    }
   }
 
   saveCheck() {
     const check = this.state.newCheck;
     check.project_id = this.state.selectedProject.value;
     this.props.dispatchAddCheck(check);
-    this.setState({ redirect: true });
   }
 
   updateField(event) {
@@ -52,13 +60,20 @@ class AddCheckContainer extends Component {
   }
 
   render() {
-    if (this.state.redirect) {
+    const { loggedInUser, error, redirect } = this.props;
+    if (!loggedInUser.email) {
+      return <Redirect to={'/login'} />;
+    }
+    if (redirect) {
       return <Redirect to={`/projects?id=${this.state.selectedProject.value}`} />;
     }
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-6 mx-auto">
+            <Alert color="danger" isOpen={error.length !== 0}>
+              {error}
+            </Alert>
             <AddCheckForm
               projects={this.props.projects}
               handleSubmit={this.saveCheck}
@@ -73,6 +88,9 @@ class AddCheckContainer extends Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
+  loggedInUser: state.loginStore.loggedInUser,
+  error: state.checkStore.error,
+  redirect: state.checkStore.redirect,
   projects: state.projectsStore.projects.map((project) =>
   ({ label: project.name, value: project.id })),
 });

@@ -1,14 +1,17 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
+import { Alert } from 'reactstrap';
 import CheckDetails from './components/CheckDetails';
 import CheckGraph from './components/CheckGraph';
 import { loadGraph, disconnectChanel, deleteCheck } from './stores/checkStore';
 
 const propTypes = {
+  loggedInUser: PropTypes.object.isRequired,
   graph: PropTypes.object.isRequired,
   check: PropTypes.object.isRequired,
   error: PropTypes.string,
+  redirect: PropTypes.bool,
   dispatchLoadGraph: PropTypes.func.isRequired,
   params: PropTypes.object.isRequired,
   dispatchDisconnectChanel: PropTypes.func.isRequired,
@@ -16,9 +19,11 @@ const propTypes = {
 };
 
 const defaultProps = {
+  loggedInUser: {},
   graph: {},
   check: {},
   error: '',
+  redirect: false,
   dispatchLoadGraph: () => {},
   dispatchDisconnectChanel: () => {},
   dispatchDeleteCheck: () => {},
@@ -27,33 +32,41 @@ const defaultProps = {
 class CheckContainer extends Component {
   constructor(props) {
     super(props);
-    this.state = { redirect: false };
     this.onDelete = this.onDelete.bind(this);
   }
 
   componentWillMount() {
     console.log(`mount ${this.props.params.id}`);
-    this.props.dispatchLoadGraph(this.props.params.id);
+    if (this.props.loggedInUser.email && this.props.check.name) {
+      this.props.dispatchLoadGraph(this.props.params.id);
+    }
   }
 
   componentWillUnmount() {
     console.log('unmount');
-    this.props.dispatchDisconnectChanel();
+    if (this.props.loggedInUser.email && this.props.check.name) {
+      this.props.dispatchDisconnectChanel();
+    }
   }
 
   onDelete(event) {
     this.props.dispatchDeleteCheck({ id: event.currentTarget.id });
-    this.setState({ redirect: true });
   }
 
   render() {
-    const { graph, check } = this.props;
-    if (this.state.redirect) {
+    const { graph, check, loggedInUser, error, redirect } = this.props;
+    if (!loggedInUser.email) {
+      return <Redirect to={'/login'} />;
+    }
+    if (redirect || !check.name) {
       return <Redirect to={'/projects'} />;
     }
     return (
       <div>
         <CheckDetails check={check} onDelete={this.onDelete} />
+        <Alert color="danger" isOpen={error.length !== 0}>
+          {error}
+        </Alert>
         <CheckGraph graph={graph} />
       </div>
     );
@@ -68,8 +81,10 @@ function findById(checks, id) {
 }
 
 const mapStateToProps = (state, ownProps) => ({
+  loggedInUser: state.loginStore.loggedInUser,
   check: findById(state.checkStore.checks, ownProps.params.id),
   error: state.checkStore.error,
+  redirect: state.checkStore.redirect,
   graph: state.checkStore.currentGraph,
 });
 
