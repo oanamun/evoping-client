@@ -5,6 +5,7 @@ import thunk from 'redux-thunk';
 import reducer from 'reducers/reducers';
 
 const middlewaresUsed = [thunk];
+let devTools = null;
 
 if (process.env.NODE_ENV === 'development') {
   const logger = createLogger({
@@ -15,10 +16,11 @@ if (process.env.NODE_ENV === 'development') {
 
   // TODO add Redux DevTools extension
   if (window.devToolsExtension) {
-    // middlewaresUsed.push(window.devToolsExtension());
+    devTools = window.devToolsExtension()
   }
 }
 
 const middleware = applyMiddleware(...middlewaresUsed);
 
-export default compose(middleware)(createStore)(reducer);
+const composeMiddleware = devTools ? compose(middleware, devTools) : compose(middleware);
+export default composeMiddleware(createStore)(reducer);
