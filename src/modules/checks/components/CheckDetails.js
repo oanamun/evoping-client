@@ -18,7 +18,7 @@ function CheckDetails({ check, onDelete }) {
         <Col md="3">
           <CardTitle color="primary">{check.name}</CardTitle>
         </Col>
-        <Col md="4">
+        <Col md="3">
           <CardText>
             <small>URL</small>
           </CardText>
@@ -30,7 +30,7 @@ function CheckDetails({ check, onDelete }) {
           </CardText>
           <CardText className="check-info">{check.check_interval} seconds</CardText>
         </Col>
-        <Col md="2">
+        <Col md="3">
           <CardText>
             <Button className="mr-1" outline color="danger" id={check.id} onClick={onDelete}>delete</Button>
             <Button outline color="warning">edit</Button>

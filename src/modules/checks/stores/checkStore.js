@@ -148,6 +148,7 @@ export function disconnectChanel() {
 const initialState = {
   checks: [],
   error: '',
+  redirect: false,
   currentGraph: {
     checkId: 1,
     maxTime: 16,
@@ -169,7 +170,7 @@ export function checkStore(state = initialState, { type, payload }) {
         if (!duplicate) checks.push(check);
         return check;
       });
-      return { ...state, checks, error: '' };
+      return { ...state, checks, error: '', redirect: false };
     }
     case INITGRAPH: {
       return {
@@ -189,24 +190,24 @@ export function checkStore(state = initialState, { type, payload }) {
     }
     case GET_CHECKS_ERROR: {
       const error = 'There was a problem when getting the checks';
-      return { ...state, error };
+      return { ...state, error, redirect: false };
     }
     case ADD_CHECK_SUCCESS: {
       const checks = state.checks.concat(payload);
-      return { ...state, checks, error: '' };
+      return { ...state, checks, error: '', redirect: true };
     }
     case ADD_CHECK_ERROR: {
       const error = 'There was a problem when adding the check';
-      return { ...state, error };
+      return { ...state, error, redirect: false };
     }
     case DELETE_CHECK_SUCCESS: {
       const checks = state.checks.filter((check) =>
       check.id !== parseInt(payload.id, 10));
-      return { ...state, checks, error: '' };
+      return { ...state, checks, error: '', redirect: true };
     }
     case DELETE_CHECK_ERROR: {
       const error = 'There was a problem when deleting the check';
-      return { ...state, error };
+      return { ...state, error, redirect: false };
     }
     case RECEIVEDCHECK: {
       const newLabels = state.currentGraph.labels;

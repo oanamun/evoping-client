@@ -1,16 +1,19 @@
 import React, { Component, PropTypes } from 'react';
 import { connect } from 'react-redux';
+import { Redirect } from 'react-router';
 import { CardColumns, Alert } from 'reactstrap';
 import ProjectCard from './components/ProjectCard';
 import { getProjects } from '../project/stores/projectsStore';
 
 const propTypes = {
+  loggedInUser: PropTypes.object.isRequired,
   projects: PropTypes.array.isRequired,
   error: PropTypes.string.isRequired,
   dispatchGetProjects: PropTypes.func,
 };
 
 const defaultProps = {
+  loggedInUser: {},
   projects: [],
   error: '',
   dispatchGetProjects: () => {},
@@ -18,11 +21,16 @@ const defaultProps = {
 
 class DashboardContainer extends Component { // eslint-disable-line
   componentWillMount() {
-    this.props.dispatchGetProjects();
+    if (this.props.loggedInUser.email) {
+      this.props.dispatchGetProjects();
+    }
   }
 
   render() {
-    const { projects } = this.props;
+    const { projects, loggedInUser } = this.props;
+    if (!loggedInUser.email) {
+      return <Redirect to={'/login'} />;
+    }
     return (
       <div>
         <Alert color="danger" isOpen={this.props.error.length !== 0}>
@@ -42,6 +50,7 @@ class DashboardContainer extends Component { // eslint-disable-line
 }
 
 const mapStateToProps = (state) => ({
+  loggedInUser: state.loginStore.loggedInUser,
   projects: state.projectsStore.projects,
   error: state.projectsStore.error,
 });
