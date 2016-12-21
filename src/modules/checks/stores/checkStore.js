@@ -107,7 +107,7 @@ export function deleteCheck(payload) {
   };
 }
 
-export function loadGraph(checkId) {
+export function loadGraph({ projectId, checkId }) {
   return (dispatch, getState) => {
     const { token } = getState().loginStore;
     dispatch({

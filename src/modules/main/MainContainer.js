@@ -4,7 +4,6 @@ import HeaderContainer from 'modules/header/HeaderContainer';
 import LoginContainer from 'modules/login/LoginContainer';
 import DashboardContainer from 'modules/dashboard/DashboardContainer';
 import ProjectsContainer from 'modules/project/ProjectsContainer';
-import CheckContainer from 'modules/checks/CheckContainer';
 import AddCheckContainer from 'modules/checks/add-check/AddCheckContainer';
 
 const propTypes = {
@@ -25,16 +24,12 @@ class MainContainer extends Component { // eslint-disable-line
                 component={DashboardContainer}
               />
               <Match
-                pattern={`${this.props.pathname}projects`}
+                pattern={`${this.props.pathname}project`}
                 component={ProjectsContainer}
               />
               <Match
                 pattern={`${this.props.pathname}login`}
                 component={LoginContainer}
-              />
-              <Match
-                pattern={`${this.props.pathname}check/:id`}
-                component={CheckContainer}
               />
               <Match
                 pattern={`${this.props.pathname}add-check`}

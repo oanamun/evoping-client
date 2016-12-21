@@ -34,7 +34,7 @@ class HeaderContainer extends Component {
             <Link className="nav-link" to="/">Dashboard</Link>
           </NavItem>
           <NavItem>
-            <Link className="nav-link" to="/projects">Projects</Link>
+            <Link className="nav-link" to="/project">Projects</Link>
           </NavItem>
           <NavItem>
             <Link className="nav-link" to="/add-check">Add check</Link>

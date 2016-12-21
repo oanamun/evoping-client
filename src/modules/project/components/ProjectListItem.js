@@ -1,13 +1,12 @@
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { ListGroupItem, Button, Collapse, Row, Col, Input } from 'reactstrap';
 import AddMemberContainer from 'modules/project/add-member/AddMemberContainer';
-import ProjectInfoTable from './ProjectInfoTable';
 import { editProject, deleteProject, removeMember, addMember } from '../stores/projectsStore';
 import { getChecks } from '../../checks/stores/checkStore';
 
 const propTypes = {
-  selectedId: PropTypes.number,
   project: PropTypes.object.isRequired,
   checks: PropTypes.array,
   dispatchGetChecks: PropTypes.func,
@@ -18,7 +17,6 @@ const propTypes = {
 };
 
 const defaultProps = {
-  selectedId: 0,
   project: {},
   checks: [],
   dispatchGetChecks: () => {},
@@ -32,12 +30,10 @@ class ProjectListItem extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: this.props.selectedId === this.props.project.id,
       editMode: false,
       project: this.props.project,
       selectedMember: {},
     };
-    this.toggle = this.toggle.bind(this);
     this.openEdit = this.openEdit.bind(this);
     this.editProject = this.editProject.bind(this);
     this.deleteProject = this.deleteProject.bind(this);
@@ -88,18 +84,12 @@ class ProjectListItem extends Component {
     });
   }
 
-  toggle() {
-    if (!this.state.editMode) {
-      this.setState({ isOpen: !this.state.isOpen });
-    }
-  }
-
   render() {
     const { checks } = this.props;
     return (
       <ListGroupItem>
         <Row>
-          <Col md="9" onClick={this.toggle}>
+          <Col md="9">
             { this.state.editMode ?
               <Input
                 className="mb-1"
@@ -109,7 +99,7 @@ class ProjectListItem extends Component {
                 onChange={this.onFieldUpdate}
               /> :
               <strong>
-                {this.state.project.name}
+                <Link to={`/project/${this.state.project.id}`}>{this.state.project.name}</Link>
               </strong>
             }
           </Col>
@@ -135,25 +125,6 @@ class ProjectListItem extends Component {
                 </Button>
               </div>
             }
-          </Col>
-        </Row>
-        <Row>
-          <Col>
-            <Collapse isOpen={this.state.isOpen}>
-              <Row>
-                <Col md="9">
-                  <ProjectInfoTable
-                    checks={checks}
-                    onRemoveMember={this.removeMember}
-                  />
-                </Col>
-                <Col md="3" hidden>
-                  <AddMemberContainer onSelect={this.onMemberSelect} />
-                  <Button outline color="primary" onClick={this.addMember}>add
-                  </Button>
-                </Col>
-              </Row>
-            </Collapse>
           </Col>
         </Row>
       </ListGroupItem>
