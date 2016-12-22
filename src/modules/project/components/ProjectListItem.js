@@ -43,10 +43,6 @@ class ProjectListItem extends Component {
     this.removeMember = this.removeMember.bind(this);
   }
 
-  componentWillMount() {
-    this.props.dispatchGetChecks(this.props.project.id);
-  }
-
   onFieldUpdate(event) {
     this.setState({ project: { ...this.state.project, name: event.currentTarget.value } });
   }
@@ -85,7 +81,6 @@ class ProjectListItem extends Component {
   }
 
   render() {
-    const { checks } = this.props;
     return (
       <ListGroupItem>
         <Row>

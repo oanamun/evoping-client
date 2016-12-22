@@ -109,38 +109,36 @@ export function deleteCheck(payload) {
 
 export function loadGraph({ projectId, checkId }) {
   return (dispatch, getState) => {
-    const { token } = getState().loginStore;
     dispatch({
       type: INITGRAPH,
       payload: {
         checkId,
       },
     });
-    dispatch(socketAuthenticate(token, () => {
+    dispatch(socketAuthenticate(() => {
       const socket = getState().loginStore.socket;
-      socket.emit('join', 4);
-      socket.on(`${checkId}`, (data) => {
-        console.log(RECEIVEDCHECK);
+      socket.emit('join', projectId);
+      socket.on(`${projectId}`, (data) => {
         const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
         const payload = {
           label: myDate,
-          responseTime: data,
+          responseTime: data.data,
         };
-        dispatch({
-          type: RECEIVEDCHECK,
-          payload,
-        });
+        if (parseInt(checkId, 10) === data.check_id) {
+          dispatch({
+            type: RECEIVEDCHECK,
+            payload,
+          });
+        }
       });
     }));
   };
 }
 
-export function disconnectChanel() {
+export function disconnectChanel(projectId) {
   return (dispatch, getState) => {
-    // ASK MIHAI HOW TO STOP LISTENING FROM SOCKET.IO
     const { socket } = getState().loginStore;
-    const { currentGraph } = getState().checkStore;
-    socket.removeAllListeners(`${currentGraph.checkId}`);
+    socket.removeAllListeners(projectId);
   };
 }
 
@@ -164,13 +162,7 @@ const initialState = {
 export function checkStore(state = initialState, { type, payload }) {
   switch (type) {
     case GET_CHECKS_SUCCESS: {
-      const checks = state.checks;
-      payload.map((check) => {
-        const duplicate = state.checks.find((c) => c.id === check.id);
-        if (!duplicate) checks.push(check);
-        return check;
-      });
-      return { ...state, checks, error: '', redirect: false };
+      return { ...state, checks: payload, error: '', redirect: false };
     }
     case INITGRAPH: {
       return {
@@ -184,9 +176,7 @@ export function checkStore(state = initialState, { type, payload }) {
             data: [],
           }],
         },
-        // currentGraph: { checkId: payload.checkId },
       };
-      // return initialState;
     }
     case GET_CHECKS_ERROR: {
       const error = 'There was a problem when getting the checks';
@@ -218,7 +208,6 @@ export function checkStore(state = initialState, { type, payload }) {
         newLabels.shift();
         newDatasets.shift();
       }
-
       return {
         ...state,
         currentGraph: {

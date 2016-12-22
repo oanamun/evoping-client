@@ -10,11 +10,10 @@ export const SOCKET_CONNECT = 'socket/CONNECT';
 
 // --------- ACTION CREATORS ----------
 
-export const socketAuthenticate = (token, handler) =>
-  (dispatch) => {
+export const socketAuthenticate = (handler) =>
+  (dispatch, getState) => {
+    const token = getState().loginStore.token;
     const socket = io.connect(BASE_URL);
-    // console.log('Action 1:');
-    // console.log(socket);
     socket.on('connect', () => {
       socket
         .emit('authenticate', { token })
@@ -32,29 +31,6 @@ export const socketAuthenticate = (token, handler) =>
         });
     });
   };
-
-// export const socketAuthenticate = (token, handler) =>
-// (dispatch) => {
-//   const socket = io.connect(URL_API);
-  // console.log('Action 1:');
-  // console.log(socket);
-//   socket.on('connect', () => {
-//     socket
-//       .emit('authenticate', { token })
-//       .on('authenticated', () => {
-//         dispatch({
-//           type: SOCKET_CONNECT,
-//           payload: {
-//             socket,
-//           },
-//         });
-//         handler();
-//       })
-//       .on('unauthorized', (msg) => {
-//         console.log(`unauthoaaarized: ${JSON.stringify(msg.data)}`);
-//       });
-//   });
-// };
 
 export function login(credentials) {
   return (dispatch, getState) => {

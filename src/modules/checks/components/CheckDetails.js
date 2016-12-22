@@ -1,28 +1,32 @@
 import React, { PropTypes } from 'react';
 import { Card, CardLink, CardTitle, CardText, Row, Col, Button } from 'reactstrap';
+import { Link } from 'react-router';
 
 const propTypes = {
   check: PropTypes.object.isRequired,
+  project: PropTypes.object.isRequired,
   onDelete: PropTypes.func,
 };
 
 export const defaultProps = {
-  check: { name: '-', host: '-', description: '-' },
+  check: { id: 0, name: '', host: '', description: '' },
+  project: { id: 0, name: '' },
   onDelete: () => {},
 };
 
-function CheckDetails({ check, onDelete }) {
+function CheckDetails({ check, project, onDelete }) {
   return (
     <Card block inverse className="check-card mb-3">
       <Row>
         <Col md="3">
           <CardTitle color="primary">{check.name}</CardTitle>
+          <Link className="check-info" to={`/project/${project.id}`}>{project.name} project</Link>
         </Col>
         <Col md="3">
           <CardText>
             <small>URL</small>
           </CardText>
-          <CardLink className="check-info" href="#">{check.host}</CardLink>
+          <CardLink className="check-info" href={check.host} target="_blank">{check.host}</CardLink>
         </Col>
         <Col md="3">
           <CardText>

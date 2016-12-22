@@ -1,4 +1,5 @@
 import { URL_API } from './../../../services/Api';
+import { socketAuthenticate, SOCKET_CONNECT } from '../../login/loginStore';
 
 // --------- ACTIONS
 export const GET_PROJECTS_SUCCESS = 'projects/GET_PROJECTS_SUCCESS';
@@ -9,11 +10,12 @@ export const EDIT_PROJECT_SUCCESS = 'projects/EDIT_PROJECT_SUCCESS';
 export const EDIT_PROJECT_ERROR = 'projects/EDIT_PROJECT_ERROR';
 export const DELETE_PROJECT_SUCCESS = 'projects/DELETE_PROJECT_SUCCESS';
 export const DELETE_PROJECT_ERROR = 'projects/DELETE_PROJECT_ERROR';
-export const ADD_MEMBER = 'projects/ADD_MEMBER';
-export const REMOVE_MEMBER = 'projects/REMOVE_MEMBER';
+export const LISTEN_SOCKET = 'projects/LISTEN_SOCKET';
 
 // --------- ACTION CREATORS ----------
-export function getProjects() {
+export function getProjects(handler = () => {
+  console.log('default');
+}) {
   return (dispatch, getState) => {
     const token = getState().loginStore.token;
     fetch(`${URL_API}project`, {
@@ -34,6 +36,7 @@ export function getProjects() {
           type: GET_PROJECTS_SUCCESS,
           payload: projects,
         });
+        handler(projects.Project);
       })
       .catch(() => {
         dispatch({
@@ -135,17 +138,25 @@ export function deleteProject(payload) {
   };
 }
 
-export function addMember(payload) {
-  return {
-    type: ADD_MEMBER,
-    payload,
+export function readData(projectId) {
+  return (dispatch, getState) => {
+    dispatch(socketAuthenticate(() => {
+      const socket = getState().loginStore.socket;
+      socket.emit('join', projectId);
+      socket.on(projectId, (data) => {
+        dispatch({
+          type: LISTEN_SOCKET,
+          payload: data,
+        });
+      });
+    }));
   };
 }
 
-export function removeMember(payload) {
-  return {
-    type: REMOVE_MEMBER,
-    payload,
+export function disconnectChanel(projectId) {
+  return (dispatch, getState) => {
+    const { socket } = getState().loginStore;
+    socket.removeAllListeners(projectId);
   };
 }
 
@@ -194,16 +205,9 @@ export function projectsStore(state = initialState, { type, payload }) {
       const error = 'There was a problem when deleting the project';
       return { ...state, error };
     }
-    case ADD_MEMBER: {
-      const project = state.projects.find((proj) => proj.id === payload.project_id);
-      const members = project.members.concat(payload.user);
-      return { ...state, projects: attachMembersToProject(state.projects, project.id, members) };
-    }
-    case REMOVE_MEMBER: {
-      const project = state.projects.find((proj) => proj.id === payload.project_id);
-      const members = project.members.filter((member) =>
-      member.id !== parseInt(payload.member_id, 10));
-      return { ...state, projects: attachMembersToProject(state.projects, project.id, members) };
+    case LISTEN_SOCKET: {
+      console.log(payload);
+      return state;
     }
     default: {
       return state;

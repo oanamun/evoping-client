@@ -3,13 +3,15 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { CardColumns, Alert } from 'reactstrap';
 import ProjectCard from './components/ProjectCard';
-import { getProjects } from '../project/stores/projectsStore';
+import { getProjects, readData, disconnectChanel } from '../project/stores/projectsStore';
 
 const propTypes = {
   loggedInUser: PropTypes.object.isRequired,
   projects: PropTypes.array.isRequired,
   error: PropTypes.string.isRequired,
   dispatchGetProjects: PropTypes.func,
+  dispatchReadData: PropTypes.func,
+  dispatchDisconnectChanel: PropTypes.func,
 };
 
 const defaultProps = {
@@ -17,13 +19,24 @@ const defaultProps = {
   projects: [],
   error: '',
   dispatchGetProjects: () => {},
+  dispatchReadData: () => {},
+  dispatchDisconnectChanel: () => {},
 };
 
 class DashboardContainer extends Component { // eslint-disable-line
   componentWillMount() {
-    if (this.props.loggedInUser.email) {
-      this.props.dispatchGetProjects();
+    const { loggedInUser } = this.props;
+    if (loggedInUser.email) {
+      this.props.dispatchGetProjects((projects) => {
+        projects.map((project) => this.props.dispatchReadData(project.id));
+      });
     }
+  }
+
+  componentWillUnmount() {
+    console.log('unmount');
+    this.props.projects.map((project) =>
+      this.props.dispatchDisconnectChanel(project.id));
   }
 
   render() {
@@ -57,6 +70,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
   dispatchGetProjects: getProjects,
+  dispatchReadData: readData,
+  dispatchDisconnectChanel: disconnectChanel,
 };
 
 

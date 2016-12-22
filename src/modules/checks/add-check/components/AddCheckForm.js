@@ -22,7 +22,7 @@ function AddCheckForm({ projects, handleSubmit, onUpdateField, selectedProject }
         <Label for="checkName">Check name</Label>
         <Input
           onChange={onUpdateField} type="text" name="name" id="checkName"
-          required placeholder="staging check"
+          required placeholder="Check 1"
         />
       </FormGroup>
       <FormGroup >
@@ -33,14 +33,14 @@ function AddCheckForm({ projects, handleSubmit, onUpdateField, selectedProject }
         />
       </FormGroup>
       <FormGroup >
-        <Label for="checkResponse">Maximum response time in seconds</Label>
+        <Label for="checkResponse">Maximum response time (seconds)</Label>
         <Input
           onChange={onUpdateField} type="text" name="max_response_time" id="checkResponse"
-          required placeholder="1"
+          required placeholder="5"
         />
       </FormGroup>
       <FormGroup>
-        <Label for="checkInterval">Check interval in seconds</Label>
+        <Label for="checkInterval">Check interval (seconds)</Label>
         <Input
           onChange={onUpdateField} type="text" name="check_interval" id="checkInterval"
           placeholder="5"
@@ -48,16 +48,24 @@ function AddCheckForm({ projects, handleSubmit, onUpdateField, selectedProject }
       </FormGroup>
       <FormGroup>
         <Label for="checkType">Type</Label>
-        <Input
-          onChange={onUpdateField} type="text" name="type" id="checkName"
-          required placeholder="web"
+        <Select
+          required
+          id="selectType"
+          name="currentType"
+          options={[{ label: 'web', value: 'web' }]}
+          placeholder={'Select type'}
+          value={{ label: 'web', value: 'web' }}
         />
       </FormGroup>
       <FormGroup>
         <Label for="checkMethodType">Method Type</Label>
-        <Input
-          onChange={onUpdateField} type="text" name="special_info" id="checkMethodType"
-          required placeholder="GET"
+        <Select
+          required
+          id="selectMethod"
+          name="currentMethod"
+          options={[{ label: 'GET', value: 'GET' }]}
+          placeholder={'Select method'}
+          value={{ label: 'GET', value: 'GET' }}
         />
       </FormGroup>
       <FormGroup>

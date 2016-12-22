@@ -9,13 +9,6 @@ export const defaultProps = {
   graph: {},
 };
 
-// const renderCheck = (checks) =>
-//   (checks.map((check) =>
-//     <li key={check.id}>
-//       <p>Name: {check.name}</p>
-//     </li>
-//   ));
-
 function CheckGraph({ graph }) {
   return (
     <div>

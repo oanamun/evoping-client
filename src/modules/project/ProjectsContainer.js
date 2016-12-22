@@ -4,11 +4,7 @@ import { Redirect, Match, Link } from 'react-router';
 import { ListGroup, Alert } from 'reactstrap';
 import AddProjectForm from 'modules/project/components/AddProjectForm';
 // containers
-import CheckContainer from 'modules/checks/CheckContainer';
 import ProjectListItem from 'modules/project/components/ProjectListItem';
-
-
-import ProjectInfoTable from './components/ProjectInfoTable';
 
 import { getProjects, addProject } from './stores/projectsStore';
 
@@ -43,7 +39,6 @@ class ProjectsContainer extends Component {
   }
 
   componentWillMount() {
-    console.log('projects 0');
     if (this.props.loggedInUser.email) {
       this.props.dispatchGetProjects();
     }
@@ -71,43 +66,26 @@ class ProjectsContainer extends Component {
 
     return (
       <div>
-        <Match
-          exactly
-          pattern={'/project'}
-          component={() => (
-            <div>
-              <AddProjectForm
-                onCreate={this.addProject}
-                onFieldUpdate={this.onFieldUpdate}
-              />
-              <Alert
-                color="danger"
-                isOpen={error.length !== 0}
-              >
-                {error}
-              </Alert>
-              <ListGroup>
-                {this.props.projects.map((project, index) =>
-                  <ProjectListItem
-                    project={project}
-                    selectedId={this.props.location.query ?
-                      parseInt(this.props.location.query.id, 10) : 0}
-                    key={project.id}
-                  />
-                )}
-              </ListGroup>
-            </div>
+        <AddProjectForm
+          onCreate={this.addProject}
+          onFieldUpdate={this.onFieldUpdate}
+        />
+        <Alert
+          color="danger"
+          isOpen={error.length !== 0}
+        >
+          {error}
+        </Alert>
+        <ListGroup>
+          {this.props.projects.map((project, index) =>
+            <ProjectListItem
+              project={project}
+              selectedId={this.props.location.query ?
+                parseInt(this.props.location.query.id, 10) : 0}
+              key={project.id}
+            />
           )}
-        />
-        <Match
-          exactly
-          pattern={'/project/:projectId'}
-          component={ProjectInfoTable}
-        />
-        <Match
-          pattern={'/project/:projectId/check/:checkId'}
-          component={CheckContainer}
-        />
+        </ListGroup>
       </div>
     );
   }

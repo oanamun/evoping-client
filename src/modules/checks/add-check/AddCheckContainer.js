@@ -28,8 +28,8 @@ class AddCheckContainer extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      newCheck: {},
-      selectedProject: null,
+      newCheck: { type: 'web', special_info: "{'method':'GET'}" },
+      selectedProject: { value: 0 },
       redirectToHome: false,
     };
     this.saveCheck = this.saveCheck.bind(this);
@@ -65,7 +65,7 @@ class AddCheckContainer extends Component {
       return <Redirect to={'/login'} />;
     }
     if (redirect) {
-      return <Redirect to={`/projects?id=${this.state.selectedProject.value}`} />;
+      return <Redirect to={`/project/${this.state.selectedProject.value}`} />;
     }
     return (
       <div className="container">

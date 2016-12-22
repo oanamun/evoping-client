@@ -27,10 +27,12 @@ function ProjectCard({ project }) {
             down
           </span>}
       </CardTitle>
-      <CardText>{project.checks} checks</CardText>
+      {project.Check.length === 1 ?
+        <CardText className="font-weight-bold">{project.Check.length} check</CardText> :
+        <CardText className="font-weight-bold">{project.Check.length} checks</CardText>
+      }
       <CardText>Last check: {project.last_check}</CardText>
       <CardText>Last response time: {project.response_time}</CardText>
-
     </Card>
   );
 }
