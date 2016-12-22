@@ -16,7 +16,7 @@ const defaultProps = {
   dispatchLogin: () => {},
 };
 
-class LoginContainer extends Component {
+export class LoginContainer extends Component {
   constructor(props) {
     super(props);
 
