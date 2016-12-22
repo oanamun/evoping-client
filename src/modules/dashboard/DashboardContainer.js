@@ -3,7 +3,13 @@ import { connect } from 'react-redux';
 import { Redirect } from 'react-router';
 import { CardColumns, Alert } from 'reactstrap';
 import ProjectCard from './components/ProjectCard';
-import { getProjects, readData, disconnectChanel } from '../project/stores/projectsStore';
+import {
+  getProjects,
+  readData,
+  disconnectChanel,
+  getLastCheck,
+} from '../project/stores/projectsStore';
+import { socketAuthenticate } from '../login/loginStore';
 
 const propTypes = {
   loggedInUser: PropTypes.object.isRequired,
@@ -12,31 +18,51 @@ const propTypes = {
   dispatchGetProjects: PropTypes.func,
   dispatchReadData: PropTypes.func,
   dispatchDisconnectChanel: PropTypes.func,
+  dispatchSocketAuthenticate: PropTypes.func,
+  dispatchGetLastCheck: PropTypes.func,
 };
 
 const defaultProps = {
   loggedInUser: {},
   projects: [],
   error: '',
-  dispatchGetProjects: () => {},
-  dispatchReadData: () => {},
-  dispatchDisconnectChanel: () => {},
+  dispatchGetProjects: () => {
+  },
+  dispatchReadData: () => {
+  },
+  dispatchDisconnectChanel: () => {
+  },
+  dispatchSocketAuthenticate: () => {
+  },
+  dispatchGetLastCheck: () => {
+  },
 };
 
 class DashboardContainer extends Component { // eslint-disable-line
   componentWillMount() {
-    const { loggedInUser } = this.props;
+    const { loggedInUser, dispatchSocketAuthenticate, dispatchGetProjects } = this.props;
     if (loggedInUser.email) {
-      this.props.dispatchGetProjects((projects) => {
-        projects.map((project) => this.props.dispatchReadData(project.id));
+      dispatchSocketAuthenticate(() => {
+        dispatchGetProjects((projects) => {
+          projects.map((project) => {
+            this.props.dispatchGetLastCheck(project.id, (checks) => {
+              getLastCheckProject(projects, checks);
+            });
+            this.props.dispatchReadData(project.id);
+            return project;
+          });
+        });
       });
     }
   }
 
   componentWillUnmount() {
     console.log('unmount');
-    this.props.projects.map((project) =>
-      this.props.dispatchDisconnectChanel(project.id));
+    this.props.projects.map((project) => {
+      console.log(project);
+      this.props.dispatchDisconnectChanel(project.id);
+      return project;
+    });
   }
 
   render() {
@@ -62,16 +88,34 @@ class DashboardContainer extends Component { // eslint-disable-line
   }
 }
 
+function getLastCheckProject(projects, checks) {
+  projects.map((project) => {
+    const check = checks.find((c) => {
+      c.id === project.id
+    });
+    console.log(checks);
+    return {
+      ...project,
+      check,
+    };
+  });
+
+  return projects;
+}
+
 const mapStateToProps = (state) => ({
   loggedInUser: state.loginStore.loggedInUser,
   projects: state.projectsStore.projects,
   error: state.projectsStore.error,
+  checks: state.projectsStore.lastChecks,
 });
 
 const mapDispatchToProps = {
   dispatchGetProjects: getProjects,
   dispatchReadData: readData,
   dispatchDisconnectChanel: disconnectChanel,
+  dispatchSocketAuthenticate: socketAuthenticate,
+  dispatchGetLastCheck: getLastCheck,
 };
 
 

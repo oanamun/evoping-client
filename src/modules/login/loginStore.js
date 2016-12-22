@@ -12,6 +12,10 @@ export const SOCKET_CONNECT = 'socket/CONNECT';
 
 export const socketAuthenticate = (handler) =>
   (dispatch, getState) => {
+    if (getState().loginStore.socket) {
+      handler();
+      return;
+    }
     const token = getState().loginStore.token;
     const socket = io.connect(BASE_URL);
     socket.on('connect', () => {

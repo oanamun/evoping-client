@@ -11,6 +11,7 @@ export const EDIT_PROJECT_ERROR = 'projects/EDIT_PROJECT_ERROR';
 export const DELETE_PROJECT_SUCCESS = 'projects/DELETE_PROJECT_SUCCESS';
 export const DELETE_PROJECT_ERROR = 'projects/DELETE_PROJECT_ERROR';
 export const LISTEN_SOCKET = 'projects/LISTEN_SOCKET';
+export const LAST_CHECK = 'projects/LAST_CHECK';
 
 // --------- ACTION CREATORS ----------
 export function getProjects(handler = () => {
@@ -45,6 +46,37 @@ export function getProjects(handler = () => {
       });
   };
 }
+
+export function getLastCheck(projectId) {
+  return (dispatch, getState) => {
+    const token = getState().loginStore.token;
+    fetch(`${URL_API}project/${projectId}/last-check`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => {
+        if (response.status >= 200 && response.status < 300) {
+          return response.json();
+        }
+        throw new Error(response.statusText);
+      })
+      .then((data) => {
+        dispatch({
+          type: LAST_CHECK,
+          payload: data,
+        });
+      })
+      .catch(() => {
+        dispatch({
+          type: LAST_CHECK,
+        });
+      });
+  };
+}
+
 
 export function addProject(project) {
   return (dispatch, getState) => {
@@ -140,16 +172,14 @@ export function deleteProject(payload) {
 
 export function readData(projectId) {
   return (dispatch, getState) => {
-    dispatch(socketAuthenticate(() => {
-      const socket = getState().loginStore.socket;
-      socket.emit('join', projectId);
-      socket.on(projectId, (data) => {
-        dispatch({
-          type: LISTEN_SOCKET,
-          payload: data,
-        });
+    const socket = getState().loginStore.socket;
+    socket.emit('join', projectId);
+    socket.on(projectId, (data) => {
+      dispatch({
+        type: LISTEN_SOCKET,
+        payload: data,
       });
-    }));
+    });
   };
 }
 
@@ -163,7 +193,7 @@ export function disconnectChanel(projectId) {
 // ------- REDUCER --------
 const initialState = {
   projects: [],
-  error: '',
+  lastChecks: [],
 };
 
 export function projectsStore(state = initialState, { type, payload }) {
@@ -205,8 +235,22 @@ export function projectsStore(state = initialState, { type, payload }) {
       const error = 'There was a problem when deleting the project';
       return { ...state, error };
     }
+    case LAST_CHECK: {
+      const checks = state.lastChecks;
+      const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+      const projectCheck = {
+        id: payload.id,
+        check: {
+          data: myDate,
+          responseTime: payload.elapsedTime,
+        },
+      };
+      return {
+        ...state,
+        lastChecks: payload.data,
+      };
+    }
     case LISTEN_SOCKET: {
-      console.log(payload);
       return state;
     }
     default: {
