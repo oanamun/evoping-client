@@ -16,7 +16,7 @@ if (process.env.NODE_ENV === 'development') {
 
   // TODO add Redux DevTools extension
   if (window.devToolsExtension) {
-    devTools = window.devToolsExtension()
+    devTools = window.devToolsExtension();
   }
 }
 
