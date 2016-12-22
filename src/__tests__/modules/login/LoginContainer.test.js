@@ -5,6 +5,7 @@ import { shallow, mount } from 'enzyme';
 import { LoginContainer } from 'modules/login/LoginContainer';
 
 let wrapper;
+const loginMock = jest.fn();
 function makeMockEvent(name, value) {
   return {
     currentTarget: {
@@ -16,6 +17,7 @@ function makeMockEvent(name, value) {
 describe('<LoginContainer />', () => {
   beforeEach(() => {
     wrapper = shallow(<LoginContainer />);
+    LoginContainer.prototype.login = loginMock;
   });
   describe('renders correctly', () => {
     it('renders without exploding', () => {
@@ -40,14 +42,12 @@ describe('<LoginContainer />', () => {
     });
     it('updates password on input changes', () => {
       const password = wrapper.find('#password');
-      const mockpasswordEvt = makeMockEvent('password', 'newVal');
-      password.simulate('change', mockpasswordEvt);
-      expect(wrapper.state().credentials.password).toBe(mockpasswordEvt.currentTarget.value);
+      const mockPassEvt = makeMockEvent('password', 'newVal');
+      password.simulate('change', mockPassEvt);
+      expect(wrapper.state().credentials.password).toBe(mockPassEvt.currentTarget.value);
     });
-    it.skip('calls login on button click', () => {
+    it('calls login on button click', () => {
       const loginButton = wrapper.find('Button');
-      const loginMock = jest.fn();
-      LoginContainer.prototype.login = loginMock;
       loginButton.simulate('click');
       expect(loginMock).toBeCalled();
     });
