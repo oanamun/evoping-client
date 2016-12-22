@@ -1,11 +1,11 @@
 /* global jest, describe, beforeEach, it, expect */
 
 import React from 'react';
-import { shallow, mount } from 'enzyme';
+import { shallow } from 'enzyme';
 import { LoginContainer } from 'modules/login/LoginContainer';
 
 let wrapper;
-const loginMock = jest.fn();
+let loginMock = jest.fn();
 function makeMockEvent(name, value) {
   return {
     currentTarget: {
@@ -19,7 +19,7 @@ describe('<LoginContainer />', () => {
     wrapper = shallow(<LoginContainer />);
     LoginContainer.prototype.login = loginMock;
   });
-  describe('renders correctly', () => {
+  describe('rendering', () => {
     it('renders without exploding', () => {
       expect(wrapper.length).toBe(1);
     });
@@ -50,6 +50,14 @@ describe('<LoginContainer />', () => {
       const loginButton = wrapper.find('Button');
       loginButton.simulate('click');
       expect(loginMock).toBeCalled();
+    });
+    it('dispatches login', () => {
+      const mockDispatch = jest.fn();
+      loginMock = jest.fn().mockImplementation(mockDispatch());
+      wrapper = shallow(<LoginContainer dispatchLogin={mockDispatch} />);
+      const loginButton = wrapper.find('Button');
+      loginButton.simulate('click');
+      expect(mockDispatch).toHaveBeenCalledTimes(1);
     });
   });
 });
