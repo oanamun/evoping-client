@@ -4,7 +4,7 @@ import { Redirect } from 'react-router';
 import { Alert } from 'reactstrap';
 import CheckDetails from './components/CheckDetails';
 import CheckGraph from './components/CheckGraph';
-import { loadGraph, disconnectChanel, deleteCheck } from './stores/checkStore';
+import { loadGraph, disconnectChanel, deleteCheck, getChecks } from './stores/checkStore';
 
 const propTypes = {
   loggedInUser: PropTypes.object.isRequired,
@@ -16,6 +16,7 @@ const propTypes = {
   params: PropTypes.object.isRequired,
   dispatchDisconnectChanel: PropTypes.func.isRequired,
   dispatchDeleteCheck: PropTypes.func.isRequired,
+  dispatchGetChecks: PropTypes.func.isRequired,
 };
 
 const defaultProps = {
@@ -24,9 +25,14 @@ const defaultProps = {
   check: {},
   error: '',
   redirect: false,
-  dispatchLoadGraph: () => {},
-  dispatchDisconnectChanel: () => {},
-  dispatchDeleteCheck: () => {},
+  dispatchLoadGraph: () => {
+  },
+  dispatchDisconnectChanel: () => {
+  },
+  dispatchDeleteCheck: () => {
+  },
+  dispatchGetChecks: () => {
+  },
 };
 
 class CheckContainer extends Component {
@@ -36,15 +42,14 @@ class CheckContainer extends Component {
   }
 
   componentWillMount() {
-    console.log(`mount ${this.props.params.id}`);
-    if (this.props.loggedInUser.email && this.props.check.name) {
-      this.props.dispatchLoadGraph(this.props.params.id);
+    if (this.props.loggedInUser.email) {
+      this.props.dispatchLoadGraph(this.props.params);
     }
   }
 
   componentWillUnmount() {
     console.log('unmount');
-    if (this.props.loggedInUser.email && this.props.check.name) {
+    if (this.props.loggedInUser.email) {
       this.props.dispatchDisconnectChanel();
     }
   }
@@ -54,12 +59,12 @@ class CheckContainer extends Component {
   }
 
   render() {
-    const { graph, check, loggedInUser, error, redirect } = this.props;
+    const { graph, check, loggedInUser, error, redirect, params, dispatchGetChecks } = this.props;
     if (!loggedInUser.email) {
       return <Redirect to={'/login'} />;
     }
-    if (redirect || !check.name) {
-      return <Redirect to={'/projects'} />;
+    if (!check.id) {
+      dispatchGetChecks(params.projectId);
     }
     return (
       <div>
@@ -77,12 +82,12 @@ CheckContainer.propTypes = propTypes;
 CheckContainer.defaultProps = defaultProps;
 
 function findById(checks, id) {
-  return checks.find((item) => item.id === parseInt(id, 10));
+  return checks.find((item) => item.id == id);
 }
 
-const mapStateToProps = (state, ownProps) => ({
+const mapStateToProps = (state, { params }) => ({
   loggedInUser: state.loginStore.loggedInUser,
-  check: findById(state.checkStore.checks, ownProps.params.id),
+  check: findById(state.checkStore.checks, params.checkId),
   error: state.checkStore.error,
   redirect: state.checkStore.redirect,
   graph: state.checkStore.currentGraph,
@@ -92,6 +97,7 @@ const mapDispatchToProps = {
   dispatchLoadGraph: loadGraph,
   dispatchDisconnectChanel: disconnectChanel,
   dispatchDeleteCheck: deleteCheck,
+  dispatchGetChecks: getChecks,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(CheckContainer);

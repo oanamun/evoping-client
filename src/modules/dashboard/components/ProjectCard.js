@@ -15,11 +15,10 @@ function ProjectCard({ project }) {
     <Card block className="project-card">
       <CardTitle>
         <Link
-          to={{
-            pathname: '/projects',
-            query: { id: project.id },
-          }}
-        >{project.name}</Link>
+          to={`/project/${project.id}`}
+        >
+          {project.name}
+        </Link>
         {project.status ?
           <span className="tag tag-success tag-pill float-xs-right">
             up
