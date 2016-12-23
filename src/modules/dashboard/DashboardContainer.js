@@ -14,6 +14,7 @@ import { socketAuthenticate } from '../login/loginStore';
 const propTypes = {
   loggedInUser: PropTypes.object.isRequired,
   projects: PropTypes.array.isRequired,
+  checks: PropTypes.array.isRequired,
   error: PropTypes.string.isRequired,
   dispatchGetProjects: PropTypes.func,
   dispatchReadData: PropTypes.func,
@@ -25,6 +26,7 @@ const propTypes = {
 const defaultProps = {
   loggedInUser: {},
   projects: [],
+  checks: [],
   error: '',
   dispatchGetProjects: () => {
   },
@@ -45,9 +47,7 @@ class DashboardContainer extends Component { // eslint-disable-line
       dispatchSocketAuthenticate(() => {
         dispatchGetProjects((projects) => {
           projects.map((project) => {
-            this.props.dispatchGetLastCheck(project.id, (checks) => {
-              getLastCheckProject(projects, checks);
-            });
+            this.props.dispatchGetLastCheck(project.id);
             this.props.dispatchReadData(project.id);
             return project;
           });
@@ -59,14 +59,13 @@ class DashboardContainer extends Component { // eslint-disable-line
   componentWillUnmount() {
     console.log('unmount');
     this.props.projects.map((project) => {
-      console.log(project);
       this.props.dispatchDisconnectChanel(project.id);
       return project;
     });
   }
 
   render() {
-    const { projects, loggedInUser } = this.props;
+    const { projects, loggedInUser, checks } = this.props;
     if (!loggedInUser.email) {
       return <Redirect to={'/login'} />;
     }
@@ -80,27 +79,13 @@ class DashboardContainer extends Component { // eslint-disable-line
             <ProjectCard
               key={index}
               project={project}
+              check={checks.find((check) => check.project_id === project.id)}
             />
           ))}
         </CardColumns>
       </div>
     );
   }
-}
-
-function getLastCheckProject(projects, checks) {
-  projects.map((project) => {
-    const check = checks.find((c) => {
-      c.id === project.id
-    });
-    console.log(checks);
-    return {
-      ...project,
-      check,
-    };
-  });
-
-  return projects;
 }
 
 const mapStateToProps = (state) => ({

@@ -13,7 +13,7 @@ const propTypes = {
   pathname: PropTypes.string,
 };
 
-class MainContainer extends Component {
+class MainContainer extends Component { // eslint-disable-line
   render() {
     return (
       <div>

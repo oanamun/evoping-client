@@ -1,5 +1,4 @@
 import { URL_API } from './../../../services/Api';
-import { socketAuthenticate, SOCKET_CONNECT } from '../../login/loginStore';
 
 // --------- ACTIONS
 export const GET_PROJECTS_SUCCESS = 'projects/GET_PROJECTS_SUCCESS';
@@ -14,9 +13,7 @@ export const LISTEN_SOCKET = 'projects/LISTEN_SOCKET';
 export const LAST_CHECK = 'projects/LAST_CHECK';
 
 // --------- ACTION CREATORS ----------
-export function getProjects(handler = () => {
-  console.log('default');
-}) {
+export function getProjects(handler = () => {}) {
   return (dispatch, getState) => {
     const token = getState().loginStore.token;
     fetch(`${URL_API}project`, {
@@ -177,7 +174,7 @@ export function readData(projectId) {
     socket.on(projectId, (data) => {
       dispatch({
         type: LISTEN_SOCKET,
-        payload: data,
+        payload: { data, projectId },
       });
     });
   };
@@ -236,22 +233,50 @@ export function projectsStore(state = initialState, { type, payload }) {
       return { ...state, error };
     }
     case LAST_CHECK: {
-      const checks = state.lastChecks;
       const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
       const projectCheck = {
-        id: payload.id,
+        project_id: payload.id,
         check: {
-          data: myDate,
+          date: myDate,
           responseTime: payload.elapsedTime,
         },
       };
+      const checks = state.lastChecks.concat(projectCheck);
       return {
         ...state,
-        lastChecks: payload.data,
+        lastChecks: checks,
       };
     }
     case LISTEN_SOCKET: {
-      return state;
+      const myDate = new Date().toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, '$1');
+      const projectCheck = {
+        project_id: payload.projectId,
+        check: {
+          date: myDate,
+          responseTime: payload.data.data,
+        },
+      };
+
+      const existingCheck = state.lastChecks.find((check) =>
+      check.project_id === payload.projectId);
+
+      if (existingCheck) {
+        // daca ultimul check salvat pentru proiect a dat fail se lasa asa
+        // pt a sti ca este problema cu proiectul
+        if (existingCheck.check.responseTime !== false) {
+          const checks = state.lastChecks.filter((check) => check.project_id !== payload.projectId);
+          const newChecks = checks.concat(projectCheck);
+          return {
+            ...state,
+            lastChecks: newChecks,
+          };
+        }
+        return state;
+      }
+      return {
+        ...state,
+        lastChecks: state.lastChecks.concat(projectCheck),
+      };
     }
     default: {
       return state;
@@ -259,13 +284,13 @@ export function projectsStore(state = initialState, { type, payload }) {
   }
 }
 
-function attachMembersToProject(projects, projectId, members) {
-  return projects.map((project) => {
-    if (project.id === projectId) {
-      const newProject = project;
-      newProject.members = members;
-      return newProject;
-    }
-    return project;
-  });
-}
+// function attachMembersToProject(projects, projectId, members) {
+//   return projects.map((project) => {
+//     if (project.id === projectId) {
+//       const newProject = project;
+//       newProject.members = members;
+//       return newProject;
+//     }
+//     return project;
+//   });
+// }

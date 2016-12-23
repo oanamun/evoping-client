@@ -1,35 +1,34 @@
-import { getChecks } from 'modules/checks/stores/checkStore';
 import React, { PropTypes, Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
-import { ListGroup, ListGroupItem, Row, Col, Tag, Button } from 'reactstrap';
+import { ListGroup, ListGroupItem, Row, Col, Tag } from 'reactstrap';
+import { getProjects, readData } from '../stores/projectsStore';
 
 const propTypes = {
-  members: PropTypes.array,
-  checks: PropTypes.array,
   project: PropTypes.object,
   params: PropTypes.object.isRequired,
-  dispatchGetChecks: PropTypes.func.isRequired,
+  dispatchGetProjects: PropTypes.func,
+  dispatchReadData: PropTypes.func,
 };
 
 const defaultProps = {
-  members: [],
-  checks: [],
-  project: {},
+  project: { Check: [] },
   params: {},
-  dispatchGetChecks: () => {},
+  dispatchGetProjects: () => {},
+  dispatchReadData: () => {},
 };
 
 class ProjectInfoTable extends Component {
 
   componentWillMount() {
-    const { params, dispatchGetChecks } = this.props;
-    const { projectId } = params;
-    dispatchGetChecks(projectId);
+    const { project, dispatchGetProjects } = this.props;
+    if (!project.name) {
+      dispatchGetProjects();
+    }
   }
 
   render() {
-    const { checks, project, params } = this.props;
+    const { project, params } = this.props;
     const { projectId } = params;
     return (
       <Row>
@@ -39,13 +38,13 @@ class ProjectInfoTable extends Component {
             <ListGroupItem active action>
               checks
             </ListGroupItem>
-            {checks.length < 1 ?
+            {project.Check.length < 1 ?
               <ListGroupItem>
                 This project has no checks. <Link to="/add-check">Add check!</Link>
               </ListGroupItem> : null
             }
 
-            {checks.map((check, i) =>
+            {project.Check.map((check, i) =>
               <ListGroupItem key={check.id}>
                 <Link to={`/project/${projectId}/check/${check.id}`}>{check.name}</Link>
                 <Tag pill className="float-xs-right" color="danger">down</Tag>
@@ -63,13 +62,12 @@ function findById(list, id) {
 }
 
 const mapStateToProps = (state, { params }) => ({
-  checks: state.checkStore.checks.filter((check) =>
-  check.project_id === parseInt(params.projectId, 10)),
   project: findById(state.projectsStore.projects, params.projectId),
 });
 
 const mapDispatchToProps = {
-  dispatchGetChecks: getChecks,
+  dispatchGetProjects: getProjects,
+  dispatchReadData: readData,
 };
 
 ProjectInfoTable.propTypes = propTypes;
