@@ -28,10 +28,6 @@ describe('<LoginContainer />', () => {
       expect(wrapper.find('Form').length).toBe(1);
       expect(wrapper.find('Button').length).toBe(1);
     });
-    it('renders an error message if credentials are incorrect', () => {
-      wrapper = shallow(<LoginContainer error={true} />); //eslint-disable-line
-      expect(wrapper.find('.text-danger').length).toBe(1);
-    });
   });
   describe('logic', () => {
     it('updates email on input changes', () => {
@@ -58,6 +54,15 @@ describe('<LoginContainer />', () => {
       const loginButton = wrapper.find('Button');
       loginButton.simulate('click');
       expect(mockDispatch).toHaveBeenCalledTimes(1);
+    });
+    it('redirects', () => {
+      wrapper = shallow(<LoginContainer redirectToHome={true} />); //eslint-disable-line
+      expect(wrapper.find('Redirect').length).toBe(1);
+      expect(wrapper.find('.container').length).toBe(0);
+    });
+    it('renders an error message if credentials are incorrect', () => {
+      wrapper = shallow(<LoginContainer error={true} />); //eslint-disable-line
+      expect(wrapper.find('.text-danger').length).toBe(1);
     });
   });
 });
