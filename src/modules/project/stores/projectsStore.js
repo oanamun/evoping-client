@@ -252,6 +252,7 @@ export function projectsStore(state = initialState, { type, payload }) {
       const projectCheck = {
         project_id: payload.projectId,
         check: {
+          id: payload.data.check_id,
           date: myDate,
           responseTime: payload.data.data,
         },
